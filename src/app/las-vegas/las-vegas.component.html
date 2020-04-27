@@ -1,0 +1,32 @@
+<div class="row">
+    <div class="col">
+        <mat-card-header>
+          <mat-card-title>{{description.title}}</mat-card-title>
+          <mat-card-subtitle>{{description.subtitle}} </mat-card-subtitle>
+          <div class="col text-right">
+            <button mat-button *ngIf="!this.isSorting.value" (click)="onSort()" >
+              <mat-icon class="mat-18">play_arrow</mat-icon>
+            </button>
+            <mat-spinner class = "ml-auto" *ngIf="isSorting.value" [diameter]="30"></mat-spinner>
+          </div>
+        </mat-card-header>
+        <mat-divider inset></mat-divider>
+        <mat-card-content>
+          <div class="row justify-content-center" >
+            <div class="col">
+              <app-bars [dataSet]="dataSet" ></app-bars>
+            </div>
+           </div>
+          <mat-divider inset></mat-divider>
+          <div class="row text-center mt-3">
+
+            <div class ="col">
+              Checks {{ checks }}
+            </div>
+            <div class ="col">
+              Swaps {{ swaps }}
+            </div>
+          </div>
+        </mat-card-content>
+    </div>
+  </div>

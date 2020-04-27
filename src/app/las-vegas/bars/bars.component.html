@@ -1,0 +1,19 @@
+<div class="row" [style]="'height:' +height">
+  <ngx-charts-bar-vertical
+    [results]="this.dataSet"
+    [xAxis]="showXAxis"
+    [yAxis]="showYAxis"
+    [showXAxisLabel]="true"
+    [showYAxisLabel]="true"
+    [showGridLines]="true"
+    [roundEdges]="false"
+    [barPadding]="0"
+    [customColors]="this.ds.customColors"
+    [scheme]="colorScheme"
+    [animations]="false"
+    (select)="onSelect($event)"
+  >
+  </ngx-charts-bar-vertical>
+</div>
+
+
