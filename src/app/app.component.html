@@ -1,125 +1,92 @@
-<div class="container">
-  <div class="row mb-3">
-    <div class="col-12">
-      <mat-card class="mb-3">
-        <mat-card-header class="Title">
-          <mat-card-title>
-            <div class="col text-center">
-              <h1>Algorithms</h1>
-            </div>
-          </mat-card-title>
-          <mat-card-subtitle>By Andres Coronado</mat-card-subtitle>
-        </mat-card-header>
-      </mat-card>
-    </div>
-    <div class="col">
-      <div class="row">
-        <div class="col">
-          <mat-card class="mb-3">
-            <mat-list dense>
-              <mat-list-item>
-                <span matLine class="text-muted">Size of input </span>
-                <span matLine>{{size}}</span>
-                <button mat-button [disabled]="isReady()" (click)="this.emit()"><mat-icon>refresh</mat-icon></button>
-                <button mat-button [disabled]="isReady()" (click)="this.sort()"><mat-icon>play_arrow</mat-icon></button>
-                <button mat-button [disabled]="!isReady()" (click)="this.stop()"><mat-icon>stop</mat-icon></button>
-              </mat-list-item>
-              <mat-list-item>
-                <mat-slider thumbLabel tickInterval="1" style="width: 100%" [(ngModel)]="size" min="10" max="1000" step="1"></mat-slider>
-              </mat-list-item>
+<div class="row mb-3">
+  <div class="col">
+    <mat-card>
+      <div class="row mb-3 justify-content-lg-center ">
+        <div class="col-lg-6">
+          <mat-list>
+            <mat-list-item>
+              <h3 matLine>Size of input  </h3>
+              <button mat-button [disabled]="isReady()" (click)="this.emit()"><mat-icon>refresh</mat-icon></button>
+              <button mat-button>{{size}}</button>
+              <mat-slider thumbLabel tickInterval="1" style="width: 250px" [(ngModel)]="size" min="10" max="1000" step="1"></mat-slider>
+            </mat-list-item>
+            <div mat-subheader>Single run</div>
+            <mat-divider inset></mat-divider>
+            <mat-list-item>
+              <p matLine>Run</p>
               <form [formGroup]="form">
-                <mat-list-item>
-                  <span matLine> Show Animations </span>
-                  <mat-slide-toggle formControlName="isAnimated"></mat-slide-toggle>
-                </mat-list-item>
+                <mat-slide-toggle matTooltip="Show Animations" formControlName="isAnimated"></mat-slide-toggle>
               </form>
-            </mat-list>
-          </mat-card>
-        </div>
-        <div class="col">
-          <mat-card>
-            <form [formGroup]="test">
-              <mat-list>
-              <mat-list-item>
-                <span matLine> number of tests </span>
-                <button mat-button [disabled]="isReady()" (click)="this.massiveTests()"><mat-icon>playlist_play</mat-icon></button>
-              </mat-list-item>
-              <mat-list-item>
+              <button mat-icon-button [disabled]="isReady()" (click)="this.sort()"><mat-icon>play_arrow</mat-icon></button>
+              <button mat-icon-button [disabled]="!isReady()" (click)="this.stop()"><mat-icon>stop</mat-icon></button>
+            </mat-list-item>
+            <div mat-subheader>Multiple runs</div>
+            <mat-divider inset></mat-divider>
+            <mat-list-item>
+              <p matLine> Number of tests </p>
+              <form [formGroup]="test">
                 <mat-slider style="width: 100%" thumbLabel tickInterval="1" formControlName="number" min="10" max="1000" step="1"></mat-slider>
-              </mat-list-item>
-              </mat-list>
-            </form>
-          </mat-card>
+              </form>
+            </mat-list-item>
+            <mat-list-item>
+              <p matLine>Run tests</p>
+              <button mat-icon-button [disabled]="isReady()" (click)="this.massiveTests()"><mat-icon>playlist_play</mat-icon></button>
+            </mat-list-item>
+          </mat-list>
         </div>
       </div>
-     </div>
-    <div class="col-md-8">
-      <mat-card>
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <app-las-vegas
-              (isSorting)="this.onQSSorting($event)"
-              [stopEvent]="stopEmitter"
-              [sort]="sort$"
-              [seed]="seed"
-              [description]="this.qs"
-              [delayEvent]="delay" >
-            </app-las-vegas>
-          </div>
-          <div class="col-md-6">
-            <app-las-vegas
+      <div class="row justify-content-center">
+        <div class="col algoBox">
+          <app-sorting
+            (isSorting)="this.onQSSorting($event)"
+            [stopEvent]="stopEmitter"
+            [sort]="sort$"
+            [seed]="seed"
+            [description]="this.qs"
+            [delayEvent]="delay" >
+          </app-sorting>
+        </div>
+        <div class="col algoBox">
+            <app-sorting
               (isSorting)="this.onLVSorting($event)"
               [stopEvent]="stopEmitter"
               [sort]="sort$"
               [seed]="seed"
               [description]="this.rqs"
               [delayEvent]="delay" >
-            </app-las-vegas>
+            </app-sorting>
+          </div>
+        <div class="col algoBox">
+          <span>Number of checks</span>
+          <app-bars [height]="'300px'" [dataSet]="dataSet"></app-bars>
+          <div class="col-12">
+            {{ 'Expectation : ' + Expetation().toString(10) }}
           </div>
         </div>
-      </mat-card>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col">
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>
-            Tests result
-          </mat-card-title>
+        <div class="col algoBox">
+          <span>frequency distribution</span>
+          <app-bars [height]="'300px'" [dataSet]="fDataSet"></app-bars>
+          <div class="col-12">
+            {{ 'Expectation : ' + Expetation().toString(10) }}
+          </div>
+        </div>
+      </div>
+      <div class="row justify-content-center" >
 
-          <mat-card-subtitle>
-            Results
-          </mat-card-subtitle>
-        </mat-card-header>
-        <mat-divider></mat-divider>
-          <mat-card-content >
-            <div class="container">
-              <div class="row" >
-                <div class="col">
-                  <app-bars [height]="'300px'" [dataSet]="dataSet"></app-bars>
-                </div>
-                <div class="col">
-                  <app-bars [height]="'300px'" [dataSet]="fDataSet"></app-bars>
-                </div>
-                <div class="col-12">
-                  {{ 'Expectation : ' + Expetation().toString(10) }}
-                </div>
-              </div>
-            </div>
-          </mat-card-content>
-      </mat-card>
-    </div>
+
+      </div>
+    </mat-card>
   </div>
 </div>
+<div class="row">
+  <div class="col">
+    <mat-card>
+      <div class="col">
+        <mat-card-content >
 
-
-<!--<div class="col">-->
-<!--  <mat-card>-->
-<!--
-<!--  </mat-card>-->
-<!--</div>-->
-
-
-
+        </mat-card-content>
+      </div>
+    </mat-card>
+  </div>
+</div>
 

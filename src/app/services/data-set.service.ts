@@ -1,6 +1,6 @@
 import {EventEmitter, Injectable} from '@angular/core';
 import {Subject} from 'rxjs';
-import {Algo} from './algo';
+import {Quicksort} from './quicksort';
 import {newArray} from '@angular/compiler/src/util';
 
 @Injectable({
@@ -21,10 +21,6 @@ export class DataSetService {
   private delay: number;
 
   constructor() {  }
-
-  // public setSpeed(ms: number) {
-  //   this.algo.slow(ms);
-  // }
 
   public async get(): Promise<DataBar[]> {
     return this.SArray.map((val, index) => {
@@ -68,7 +64,7 @@ export class DataSetService {
 
   public async LVQuickSort(delay: number, emit= true) {
     this.isSorting.emit(true);
-    const algo = new Algo(this.stopEvent, delay);
+    const algo = new Quicksort(this.stopEvent, delay);
     const subscriptions = [
       algo.checkEvent.subscribe(() => { this.checkEvent.emit(); }),
       algo.swapEvent.subscribe(() => { this.swapEvent.emit(); this.emit(); }),

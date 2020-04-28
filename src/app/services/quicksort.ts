@@ -1,6 +1,6 @@
 import {EventEmitter} from '@angular/core';
 
-export class Algo {
+export class Quicksort {
 
   swapEvent = new EventEmitter();
   checkEvent = new EventEmitter();

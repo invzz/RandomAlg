@@ -7,12 +7,12 @@ import {BehaviorSubject} from 'rxjs';
 
 
 @Component({
-  selector: 'app-las-vegas',
-  templateUrl: './las-vegas.component.html',
-  styleUrls: ['./las-vegas.component.css'],
+  selector: 'app-sorting',
+  templateUrl: './sorting.component.html',
+  styleUrls: ['./sorting.component.css'],
   providers: [DataSetService]
 })
-export class LasVegasComponent implements OnInit {
+export class SortingComponent implements OnInit {
   dataSet: DataBar[];
   swaps = 0;
   checks = 0;

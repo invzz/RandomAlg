@@ -7,9 +7,11 @@ import {DataSetService} from '../../services/data-set.service';
   styleUrls: ['./bars.component.css']
 })
 export class BarsComponent implements OnInit {
-  single: any[];
-  showXAxis = true;
-  showYAxis = true;
+
+  @Input() showX = true;
+  @Input() showY = true;
+  @Input() showXAxisLabel = true;
+  @Input() showYAxisLabel = true;
   customColors = [
     {
       name: '0',
