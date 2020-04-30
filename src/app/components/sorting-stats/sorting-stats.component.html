@@ -6,10 +6,9 @@
           <mat-list>
             <mat-list-item>
               <h3 matLine>Size of input </h3>
-              <button (click)="this.emit()" [disabled]="isReady()" mat-button>
+              <button mat-icon-button (click)="this.emit()" [disabled]="isReady()" mat-button>
                 <mat-icon>refresh</mat-icon>
               </button>
-              <button mat-button>{{size}}</button>
               <mat-slider [(ngModel)]="size" max="1000" min="10" step="1" style="width: 250px" thumbLabel
                           tickInterval="1"></mat-slider>
             </mat-list-item>
@@ -29,19 +28,23 @@
             </mat-list-item>
             <div mat-subheader>Multiple runs</div>
             <mat-divider inset></mat-divider>
-            <mat-list-item>
-              <p matLine> Number of tests </p>
-              <form [formGroup]="test">
-                <mat-slider formControlName="number" max="1000" min="10" step="1" style="width: 100%" thumbLabel
-                            tickInterval="1"></mat-slider>
-              </form>
-            </mat-list-item>
-            <mat-list-item>
-              <p matLine>Run tests {{this.progress}}</p>
-              <button (click)="this.massiveTests()" [disabled]="isReady()" mat-icon-button>
-                <mat-icon>playlist_play</mat-icon>
-              </button>
-            </mat-list-item>
+            <form [formGroup]="test">
+              <mat-list-item>
+                <p matLine> Number of tests </p>
+                  <mat-slider formControlName="number" max="1000" min="10" step="1" style="width: 100%" thumbLabel
+                              tickInterval="1"></mat-slider>
+              </mat-list-item>
+              <mat-list-item>
+                <p matLine>Run tests</p>
+                <mat-slide-toggle formControlName="shuffle" matTooltip="Shuffle input each run"></mat-slide-toggle>
+                <button  matTooltip="Run tests" (click)="this.massiveTests()" [disabled]="isReady()" mat-icon-button>
+                  <mat-icon>playlist_play</mat-icon>
+                </button>
+              </mat-list-item>
+              <mat-list-item>
+                <p>{{this.progress}}</p>
+              </mat-list-item>
+            </form>
           </mat-list>
         </div>
       </div>

@@ -43,6 +43,7 @@ export class SortingStatsComponent implements OnInit {
     });
 
     this.test = this.fb.group({
+      shuffle: [false, []],
       number: [10, []]
     });
 
@@ -89,6 +90,9 @@ export class SortingStatsComponent implements OnInit {
     // await this.ds.shuffle().then((shuffled) => data = shuffled.slice());
     const algoFactory = () => new Quicksort(0);
     Promise.resolve().then(() => {
+      if (this.test.get('shuffle').value) {
+        this.ds.shuffle();
+      }
       this.ss.runManyTimes(this.numberOfRuns, this.ds.data, algoFactory)
         .subscribe((results) => {
           console.log(results);
@@ -117,7 +121,7 @@ export class SortingStatsComponent implements OnInit {
       const S = this.dataSet.map(x => x.value);
       const R = this.numberOfRuns;
       const reducer = (accumulator, currentValue) => accumulator + currentValue;
-      Math.round(this.expect = 1 / R * S.reduce(reducer));
+      this.expect = Math.round( 1 / R * S.reduce(reducer));
     }
   }
 

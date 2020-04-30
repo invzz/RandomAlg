@@ -47,16 +47,12 @@ export class SortingService<T> {
     }));
   }
 
-  public run(data: T[], ss: SortingService<T>) {
-    return Promise.resolve();
-  }
-
   public runManyTimes(n, data: T[], sortableFactory: () => Sortable<T>) {
     const N = [...Array(n).keys()];
     return forkJoin(N.map(() => {
       const ss = new SortingService<T>();
       ss.setAlgo(sortableFactory());
-      return ss.algorithm.sort(data);
+      return ss.algorithm.sort(data.slice());
     }));
 
   }
