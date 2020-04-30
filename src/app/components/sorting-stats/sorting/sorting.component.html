@@ -1,28 +1,28 @@
 <div class="row">
     <div class="col">
       <mat-list>
-        <mat-list-item>
-          <h3 matLine>{{description.title}}</h3>
-          <button mat-icon-button *ngIf="!this.isSorting.value" (click)="onSort()" >
+        <mat-list-item dense>
+          <p matLine>{{description.title}}</p>
+          <button mat-icon-button *ngIf="!this.isSorting.value" (click)="onSort()">
             <mat-icon class="mat-18">play_arrow</mat-icon>
           </button>
-          <mat-spinner color="accent" class = "ml-auto" *ngIf="isSorting.value" [diameter]="30"></mat-spinner>
+          <mat-spinner color="accent" class="ml-auto" *ngIf="isSorting.value" [diameter]="30"></mat-spinner>
         </mat-list-item>
       </mat-list>
       <mat-divider inset></mat-divider>
         <mat-card-content>
           <div class="row justify-content-center" >
             <div class="col">
-              <app-bars [showX]="false" [showY]="false"  [dataSet]="dataSet" ></app-bars>
+              <app-bars [customColors]="ss.customColors" [dataSet]="dataSet" [showX]="false" [showY]="false"></app-bars>
             </div>
            </div>
           <mat-divider inset></mat-divider>
           <div class="row text-center mt-3">
-            <div class ="col">
-              Checks {{ checks }}
+            <div class="col">
+              Checks {{ this.ss.checks }}
             </div>
-            <div class ="col">
-              Swaps {{ swaps }}
+            <div class="col">
+              Swaps {{ this.ss.swaps }}
             </div>
           </div>
         </mat-card-content>

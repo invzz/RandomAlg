@@ -1,0 +1,89 @@
+<div class="row mb-3">
+  <div class="col">
+    <mat-card>
+      <div class="row mb-3  ">
+        <div class="col-lg-6 algoBox">
+          <mat-list>
+            <mat-list-item>
+              <h3 matLine>Size of input </h3>
+              <button (click)="this.emit()" [disabled]="isReady()" mat-button>
+                <mat-icon>refresh</mat-icon>
+              </button>
+              <button mat-button>{{size}}</button>
+              <mat-slider [(ngModel)]="size" max="1000" min="10" step="1" style="width: 250px" thumbLabel
+                          tickInterval="1"></mat-slider>
+            </mat-list-item>
+            <div mat-subheader>Single run</div>
+            <mat-divider inset></mat-divider>
+            <mat-list-item>
+              <p matLine>Run</p>
+              <form [formGroup]="form">
+                <mat-slide-toggle formControlName="isAnimated" matTooltip="Show Animations"></mat-slide-toggle>
+              </form>
+              <button (click)="this.sort()" [disabled]="isReady()" mat-icon-button>
+                <mat-icon>play_arrow</mat-icon>
+              </button>
+              <button (click)="this.stop()" [disabled]="!isReady()" mat-icon-button>
+                <mat-icon>stop</mat-icon>
+              </button>
+            </mat-list-item>
+            <div mat-subheader>Multiple runs</div>
+            <mat-divider inset></mat-divider>
+            <mat-list-item>
+              <p matLine> Number of tests </p>
+              <form [formGroup]="test">
+                <mat-slider formControlName="number" max="1000" min="10" step="1" style="width: 100%" thumbLabel
+                            tickInterval="1"></mat-slider>
+              </form>
+            </mat-list-item>
+            <mat-list-item>
+              <p matLine>Run tests {{this.progress}}</p>
+              <button (click)="this.massiveTests()" [disabled]="isReady()" mat-icon-button>
+                <mat-icon>playlist_play</mat-icon>
+              </button>
+            </mat-list-item>
+          </mat-list>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col algoBox">
+          <app-sorting
+            (isSorting)="this.onSorting($event)"
+            [description]="this.rqs"
+            [newSeed]="seed"
+            [onAnimationCommand]="delay"
+            [onSortCommand]="sort$"
+            [onStopCommand]="stopEmitter">
+          </app-sorting>
+        </div>
+        <div class="col testBox text-center">
+          <span>Number of checks</span>
+          <app-bars [dataSet]="dataSet" [height]="'300px'"></app-bars>
+          <div class="col-12">
+            {{ 'Expectation : ' + expect }}
+          </div>
+        </div>
+        <div class="col testBox text-center">
+          <span>frequency distribution</span>
+          <app-bars [dataSet]="fDataSet" [height]="'300px'" [showY]="false"></app-bars>
+          <div class="col-12">
+            {{ 'Expectation : ' + expect }}
+          </div>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+      </div>
+    </mat-card>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <mat-card>
+      <div class="col">
+        <mat-card-content>
+
+        </mat-card-content>
+      </div>
+    </mat-card>
+  </div>
+</div>

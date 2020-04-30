@@ -1,5 +1,4 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {DataSetService} from '../../services/data-set.service';
 
 @Component({
   selector: 'app-bars',
@@ -12,12 +11,7 @@ export class BarsComponent implements OnInit {
   @Input() showY = true;
   @Input() showXAxisLabel = true;
   @Input() showYAxisLabel = true;
-  customColors = [
-    {
-      name: '0',
-      value: '#ffffff'
-    }
-  ];
+  @Input() customColors = [];
 
   colorScheme = {
     domain: ['#0f111a']
@@ -26,13 +20,10 @@ export class BarsComponent implements OnInit {
   @Input() dataSet: any;
   @Input() height: string;
 
-  constructor(public ds: DataSetService) {  }
-
-  async ngOnInit() {
+  constructor() {
   }
 
-  onSelect(bar: { name: any, value?: number, label?: any}) {
-
+  async ngOnInit() {
   }
 
 }
