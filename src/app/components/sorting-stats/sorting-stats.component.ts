@@ -22,13 +22,15 @@ export class SortingStatsComponent implements OnInit {
   form: FormGroup;
   test: FormGroup;
 
-  size = 50;
-  isSorting = [false];
   dataSet: DataBar[] = [];
   fDataSet: DataBar[] = [];
-  progress = 0;
-  expect: number;
+
+  size = 50;
+  isSorting = false;
+  expectedNumberOfChecks: number;
+
   numberOfRuns = 10;
+  nlogn: number;
 
 
   constructor(public ds: DataStateService<number>, public ss: SortingService<number>,
@@ -44,7 +46,7 @@ export class SortingStatsComponent implements OnInit {
 
     this.test = this.fb.group({
       shuffle: [false, []],
-      number: [10, []]
+      number: [this.numberOfRuns, []]
     });
 
     this.form.get('isAnimated').valueChanges.subscribe((s) => {
@@ -57,6 +59,8 @@ export class SortingStatsComponent implements OnInit {
         this.numberOfRuns = s;
       }
     );
+
+
   }
 
   public async emit() {
@@ -76,11 +80,11 @@ export class SortingStatsComponent implements OnInit {
   }
 
   isReady() {
-    return this.isSorting.some(val => val === true);
+    return this.isSorting;
   }
 
   onSorting(newValue: boolean) {
-    this.isSorting[0] = newValue;
+    this.isSorting = newValue;
   }
 
 
@@ -90,27 +94,24 @@ export class SortingStatsComponent implements OnInit {
     // await this.ds.shuffle().then((shuffled) => data = shuffled.slice());
     const algoFactory = () => new Quicksort(0);
     Promise.resolve().then(() => {
-      if (this.test.get('shuffle').value) {
-        this.ds.shuffle();
-      }
+      if (this.test.get('shuffle').value) { this.ds.shuffle(); }
       this.ss.runManyTimes(this.numberOfRuns, this.ds.data, algoFactory)
-        .subscribe((results) => {
-          console.log(results);
-          results.forEach((result, index) =>
-            this.dataSet.push({name: index, value: result})
-          );
-          this.fDataSet = this.frequency();
-          this.Expectation();
+      .then((results) => {
+        results.forEach((result, index) => this.dataSet.push({name: index, value: result}));
+        this.ss.isSorting.next(false);
+        this.fDataSet = this.frequency();
+        this.Expectation();
         });
     });
+    this.ss.isSorting.emit(false);
   }
 
 
   frequency(): any {
     const S: DataBar[] = this.dataSet.map(x => x.value).reduce((acc: DataBar[], item: number) => {
-      const aname = item;
-      const avalue = acc[item] ? acc[item].value + 1 : 1;
-      acc[item] = {name: aname, value: avalue};
+      const n = item;
+      const v = acc[item] ? acc[item].value + 1 : 1;
+      acc[item] = {name: n, value: v};
       return acc;
     }, []);
     return S.filter(x => x.value > 0);
@@ -121,7 +122,9 @@ export class SortingStatsComponent implements OnInit {
       const S = this.dataSet.map(x => x.value);
       const R = this.numberOfRuns;
       const reducer = (accumulator, currentValue) => accumulator + currentValue;
-      this.expect = Math.round( 1 / R * S.reduce(reducer));
+      this.nlogn = this.size * Math.log(this.size);
+      this.expectedNumberOfChecks = Math.round( 1 / R * S.reduce(reducer));
+
     }
   }
 

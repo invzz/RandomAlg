@@ -1,19 +1,20 @@
-<div class="row" [style]="'height:' +height">
-  <ngx-charts-bar-vertical
+<div class="row m-3" style="height: 400px">
+  <ngx-charts-bar-vertical class="dark"
     [results]="this.dataSet"
     [xAxis]="showX"
     [yAxis]="showY"
-    [showXAxisLabel]="true"
-    [showYAxisLabel]="true"
+    [showXAxisLabel]="showX"
+    [showYAxisLabel]="showY"
+    [xAxisLabel]="xLabel"
+    [yAxisLabel]="yLabel"
     [showGridLines]="true"
     [roundEdges]="false"
     [barPadding]="0"
     [customColors]="customColors"
     [scheme]="colorScheme"
-    [animations]="false"
+    [animations]="animations"
   >
   </ngx-charts-bar-vertical>
-
 </div>
 
 

@@ -13,7 +13,12 @@
         <mat-card-content>
           <div class="row justify-content-center" >
             <div class="col">
-              <app-bars [customColors]="ss.customColors" [dataSet]="dataSet" [showX]="false" [showY]="false"></app-bars>
+              <app-bars [animations]="false"
+                        [customColors]="ss.customColors"
+                        [dataSet]="dataSet"
+                        [showX]="false"
+                        [showY]="false">
+              </app-bars>
             </div>
            </div>
           <mat-divider inset></mat-divider>

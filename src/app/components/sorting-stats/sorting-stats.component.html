@@ -1,92 +1,97 @@
-<div class="row mb-3">
-  <div class="col">
-    <mat-card>
-      <div class="row mb-3  ">
-        <div class="col-lg-6 algoBox">
-          <mat-list>
-            <mat-list-item>
-              <h3 matLine>Size of input </h3>
-              <button mat-icon-button (click)="this.emit()" [disabled]="isReady()" mat-button>
-                <mat-icon>refresh</mat-icon>
-              </button>
-              <mat-slider [(ngModel)]="size" max="1000" min="10" step="1" style="width: 250px" thumbLabel
-                          tickInterval="1"></mat-slider>
-            </mat-list-item>
-            <div mat-subheader>Single run</div>
-            <mat-divider inset></mat-divider>
-            <mat-list-item>
-              <p matLine>Run</p>
-              <form [formGroup]="form">
-                <mat-slide-toggle formControlName="isAnimated" matTooltip="Show Animations"></mat-slide-toggle>
-              </form>
-              <button (click)="this.sort()" [disabled]="isReady()" mat-icon-button>
-                <mat-icon>play_arrow</mat-icon>
-              </button>
-              <button (click)="this.stop()" [disabled]="!isReady()" mat-icon-button>
-                <mat-icon>stop</mat-icon>
-              </button>
-            </mat-list-item>
-            <div mat-subheader>Multiple runs</div>
-            <mat-divider inset></mat-divider>
-            <form [formGroup]="test">
-              <mat-list-item>
-                <p matLine> Number of tests </p>
-                  <mat-slider formControlName="number" max="1000" min="10" step="1" style="width: 100%" thumbLabel
-                              tickInterval="1"></mat-slider>
-              </mat-list-item>
-              <mat-list-item>
-                <p matLine>Run tests</p>
-                <mat-slide-toggle formControlName="shuffle" matTooltip="Shuffle input each run"></mat-slide-toggle>
-                <button  matTooltip="Run tests" (click)="this.massiveTests()" [disabled]="isReady()" mat-icon-button>
-                  <mat-icon>playlist_play</mat-icon>
-                </button>
-              </mat-list-item>
-              <mat-list-item>
-                <p>{{this.progress}}</p>
-              </mat-list-item>
+<mat-card>
+  <div class="row mb-2">
+    <div class="col-lg-6">
+      <div class="box">
+        <mat-list>
+          <div mat-subheader>Size of input</div>
+          <mat-divider inset></mat-divider>
+          <mat-list-item>
+            <p matLine>{{size}}</p>
+            <button mat-icon-button (click)="this.emit()" [disabled]="isReady()" mat-button>
+              <mat-icon>refresh</mat-icon>
+            </button>
+            <mat-slider [(ngModel)]="size" max="1000" min="10" step="1"  thumbLabel tickInterval="1" (change)="this.emit()"></mat-slider>
+          </mat-list-item>
+          <div mat-subheader>Single run</div>
+          <mat-divider inset></mat-divider>
+          <mat-list-item>
+            <p matLine>Run</p>
+            <form [formGroup]="form">
+              <mat-slide-toggle formControlName="isAnimated" matTooltip="Show Animations"></mat-slide-toggle>
             </form>
-          </mat-list>
-        </div>
+            <button (click)="this.sort()" [disabled]="isReady()" mat-icon-button>
+              <mat-icon>play_arrow</mat-icon>
+            </button>
+            <button (click)="this.stop()" [disabled]="!isReady()" mat-icon-button>
+              <mat-icon>stop</mat-icon>
+            </button>
+          </mat-list-item>
+          <div mat-subheader>Multiple runs</div>
+          <mat-divider inset></mat-divider>
+          <form [formGroup]="test">
+            <mat-list-item>
+              <p matLine> Number of runs </p>
+                <mat-slider formControlName="number" max="1000" min="10" step="1"  thumbLabel
+                            tickInterval="1"></mat-slider>
+            </mat-list-item>
+            <mat-list-item>
+              <p matLine>Run tests</p>
+              <mat-slide-toggle formControlName="shuffle" matTooltip="Shuffle input each run"></mat-slide-toggle>
+              <button  matTooltip="Run tests" (click)="this.massiveTests()" [disabled]="isReady()" mat-icon-button>
+                <mat-icon>playlist_play</mat-icon>
+              </button>
+              <p matLine class="text-muted">{{ 'Expected number of checks : ' + expectedNumberOfChecks }}</p>
+              <p matLine class="text-muted">{{ 'n(logn) : ' + nlogn }}</p>
+              <p matLine class="text-muted">{{ 'C : ' + expectedNumberOfChecks / nlogn }}</p>
+            </mat-list-item>
+          </form>
+        </mat-list>
       </div>
-      <div class="row justify-content-center">
-        <div class="col algoBox">
-          <app-sorting
-            (isSorting)="this.onSorting($event)"
-            [description]="this.rqs"
-            [newSeed]="seed"
-            [onAnimationCommand]="delay"
-            [onSortCommand]="sort$"
-            [onStopCommand]="stopEmitter">
-          </app-sorting>
-        </div>
-        <div class="col testBox text-center">
-          <span>Number of checks</span>
-          <app-bars [dataSet]="dataSet" [height]="'300px'"></app-bars>
-          <div class="col-12">
-            {{ 'Expectation : ' + expect }}
+    </div>
+    <div class="col-lg-6">
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="box">
+            <mat-list>
+              <div mat-subheader>Multiple runs</div>
+              <mat-divider inset></mat-divider>
+            </mat-list>
+            <app-bars
+              xLabel='Runs'
+              yLabel='Checks'
+              [dataSet]="dataSet">
+            </app-bars>
           </div>
         </div>
-        <div class="col testBox text-center">
-          <span>frequency distribution</span>
-          <app-bars [dataSet]="fDataSet" [height]="'300px'" [showY]="false"></app-bars>
-          <div class="col-12">
-            {{ 'Expectation : ' + expect }}
+        <div class="col-lg-6 text-center">
+          <div class="box">
+            <mat-list>
+              <div mat-subheader>Distribution of results</div>
+              <mat-divider inset></mat-divider>
+            </mat-list>
+            <mat-divider inset></mat-divider>
+            <app-bars xLabel='Number of Checks'
+                      yLabel='Occurrences'
+                      [dataSet]="fDataSet"
+            ></app-bars>
           </div>
         </div>
       </div>
-      <div class="row justify-content-center">
-      </div>
-    </mat-card>
+    </div>
   </div>
-</div>
-<div class="row">
-  <div class="col">
-    <mat-card>
-      <div class="col">
-        <mat-card-content>
+  <div class="row justify-content-center">
+    <div class="col">
+      <div class="box">
+        <app-sorting
+          (isSorting)="this.onSorting($event)"
+          [description]="this.rqs"
+          [newSeed]="seed"
+          [onAnimationCommand]="delay"
+          [onSortCommand]="sort$"
+          [onStopCommand]="stopEmitter">
+        </app-sorting>
+      </div>
+    </div>
+  </div>
 
-        </mat-card-content>
-      </div>
-    </mat-card>
-  </div>
-</div>
+</mat-card>

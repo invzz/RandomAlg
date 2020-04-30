@@ -1,29 +1,23 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-bars',
   templateUrl: './bars.component.html',
-  styleUrls: ['./bars.component.css']
+  styleUrls: ['./bars.component.scss']
 })
-export class BarsComponent implements OnInit {
+export class BarsComponent  {
+  colorScheme = { domain: ['#0f111a'] };
 
   @Input() showX = true;
   @Input() showY = true;
   @Input() showXAxisLabel = true;
   @Input() showYAxisLabel = true;
   @Input() customColors = [];
-
-  colorScheme = {
-    domain: ['#0f111a']
-  };
-
   @Input() dataSet: any;
-  @Input() height: string;
+  @Input() xLabel: any = 'X';
+  @Input() yLabel: any = 'Y';
+  @Input() animations = true;
 
-  constructor() {
-  }
-
-  async ngOnInit() {
-  }
+  constructor() {  }
 
 }

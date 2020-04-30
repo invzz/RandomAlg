@@ -41,8 +41,4 @@ export class SortingComponent implements OnInit {
     this.ss.updates.subscribe((data) => this.dataSet = data);
     await this.ss.sort(this.ds.data);
   }
-
-  async setData(A: number[]) {
-    await this.ds.set(A);
-  }
 }

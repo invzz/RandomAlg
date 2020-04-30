@@ -49,10 +49,10 @@ export class SortingService<T> {
 
   public runManyTimes(n, data: T[], sortableFactory: () => Sortable<T>) {
     const N = [...Array(n).keys()];
-    return forkJoin(N.map(() => {
-      const ss = new SortingService<T>();
-      ss.setAlgo(sortableFactory());
-      return ss.algorithm.sort(data.slice());
+    this.isSorting.emit(true);
+    return Promise.all(N.map(async () => {
+      this.setAlgo(sortableFactory());
+      return this.algorithm.sort(data.slice());
     }));
 
   }

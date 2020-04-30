@@ -35,25 +35,23 @@ export class Quicksort implements Sortable<number> {
 
   async sort(data: number[]) {
     this.checks = 0;
-    await this.randomizedQuickSort(data, 0, data.length - 1);
-    return this.checks;
+    return new Promise<number>((resolve) => {
+      this.randomizedQuickSort(data, 0, data.length - 1).then(() => resolve(this.checks));
+    });
   }
 
   public stopToggle() {
     this.stop = !this.stop;
   }
 
-  public async swap(A: Array<number>, first: number, second: number) {
+  public swap(A: Array<number>, first: number, second: number) {
+    this.swapEvent.emit();
     if (this.stop) {
       return;
     }
     const aux = A[first];
     A[first] = A[second];
     A[second] = aux;
-    this.swapEvent.emit();
-    if (this.delay) {
-      await this.wait(0.002);
-    }
   }
 
   public async partition(A: Array<number>, p: number, r: number) {
@@ -68,12 +66,15 @@ export class Quicksort implements Sortable<number> {
       this.painter.setWhite(j);
       this.colors.emit(this.painter);
       if (A[j] <= x) {
+        this.checkEvent.emit();
         i++;
-        await this.swap(A, i, j);
+        this.swap(A, i, j);
+        if (this.delay) {
+          await this.wait(this.delay);
+        }
       }
-      this.checkEvent.emit();
     }
-    await this.swap(A, i + 1, r);
+    this.swap(A, i + 1, r);
     return i + 1;
   }
 
