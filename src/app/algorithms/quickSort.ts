@@ -4,7 +4,7 @@ import {Sortable} from './sortable.interface';
 import {Observable} from 'rxjs';
 
 
-export class Quicksort implements Sortable<number> {
+export class QuickSort implements Sortable<number> {
   checks = 0;
   swapEvent = new EventEmitter();
   checkEvent = new EventEmitter();
@@ -63,11 +63,12 @@ export class Quicksort implements Sortable<number> {
     let j = p;
     for (j; j < r; j++) {
       this.checkEvent.emit();
-      this.painter.setWhite(j);
-      this.colors.emit(this.painter);
       if (A[j] <= x) {
         this.checkEvent.emit();
         i++;
+        this.painter.setWhite(j);
+        this.painter.setYellow(i);
+        this.colors.emit(this.painter);
         this.swap(A, i, j);
         if (this.delay) {
           await this.wait(this.delay);
@@ -78,18 +79,31 @@ export class Quicksort implements Sortable<number> {
     return i + 1;
   }
 
+  private async randomizedPartition(A: Array<number>, p: number, r: number) {
+    if (this.stop) {
+      return;
+    }
+    const randomIndex = Math.floor(Math.random() * (r - p + 1)) + p;
+    await this.swap(A, r, randomIndex);
+    return await this.partition(A, p, r);
+  }
+
+
   public async randomizedQuickSort(A: Array<number>, p: number, r: number) {
     if (this.stop) {
       return null;
     }
     this.painter.setYellow(p);
     this.painter.setGreen(r);
-    if (p < r) {
+    if (p <= r) {
       this.checkEvent.emit();
       const q = await this.randomizedPartition(A, p, r);
-      this.painter.setRed(q);
+      this.painter.setRed(q - 1);
       this.colors.emit(this.painter);
       await this.randomizedQuickSort(A, p, q - 1);
+      this.painter.setGreen(r);
+      this.painter.setRed(q + 1);
+      this.colors.emit(this.painter);
       await this.randomizedQuickSort(A, q + 1, r);
     } else {
       return this.checks;
@@ -107,14 +121,6 @@ export class Quicksort implements Sortable<number> {
     }
   }
 
-  private async randomizedPartition(A: Array<number>, p: number, r: number) {
-    if (this.stop) {
-      return;
-    }
-    const randomIndex = Math.floor(Math.random() * (r - p + 1)) + p;
-    await this.swap(A, r, randomIndex);
-    return await this.partition(A, p, r);
-  }
 }
 
 

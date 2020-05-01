@@ -19,6 +19,11 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {SortingStatsComponent} from './components/sorting-stats/sorting-stats.component';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import { SidenavComponent } from './components/sidenav/sidenav.component';
+import {MatSelectModule} from '@angular/material/select';
+import {RouterModule} from '@angular/router';
+import {MatToolbarModule} from '@angular/material/toolbar';
 
 
 @NgModule({
@@ -27,26 +32,31 @@ import {SortingStatsComponent} from './components/sorting-stats/sorting-stats.co
     SortingComponent,
     BarsComponent,
     SortingStatsComponent,
+    SidenavComponent,
   ],
-    imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        ReactiveFormsModule,
-        MatCardModule,
-        MatSliderModule,
-        MatIconModule,
-        MatButtonModule,
-        MatDividerModule,
-        BarChartModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatProgressSpinnerModule,
-        MatListModule,
-        FormsModule,
-        MatSlideToggleModule,
-        MatProgressBarModule,
-        MatTooltipModule,
-    ],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatSliderModule,
+    MatIconModule,
+    MatButtonModule,
+    MatDividerModule,
+    BarChartModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+    MatListModule,
+    FormsModule,
+    MatSlideToggleModule,
+    MatProgressBarModule,
+    MatTooltipModule,
+    MatSidenavModule,
+    MatSelectModule,
+    RouterModule,
+    MatToolbarModule,
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })

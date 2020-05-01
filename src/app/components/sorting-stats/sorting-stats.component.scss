@@ -1,0 +1,22 @@
+// Import library functions for theme creation.
+@import '~@angular/material/theming';
+
+  .row {
+    margin-bottom: 15px;
+  }
+
+  .box {
+
+    border: 1px solid #595959;
+    border-radius: 10px;
+  }
+
+  .grow {
+    height: 100%
+  }
+
+.fill {
+  /* This fills the remaining space, by using flexbox.
+     Every toolbar row uses a flexbox row layout. */
+  flex: 1 1 auto;
+}

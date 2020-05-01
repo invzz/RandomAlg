@@ -1,87 +1,76 @@
-<mat-card>
-  <div class="row mb-2">
-    <div class="col-lg-6">
-      <div class="box">
-        <mat-list>
-          <div mat-subheader>Size of input</div>
-          <mat-divider inset></mat-divider>
-          <mat-list-item>
-            <p matLine>{{size}}</p>
-            <button mat-icon-button (click)="this.emit()" [disabled]="isReady()" mat-button>
-              <mat-icon>refresh</mat-icon>
-            </button>
-            <mat-slider [(ngModel)]="size" max="1000" min="10" step="1"  thumbLabel tickInterval="1" (change)="this.emit()"></mat-slider>
-          </mat-list-item>
-          <div mat-subheader>Single run</div>
-          <mat-divider inset></mat-divider>
-          <mat-list-item>
-            <p matLine>Run</p>
-            <form [formGroup]="form">
-              <mat-slide-toggle formControlName="isAnimated" matTooltip="Show Animations"></mat-slide-toggle>
-            </form>
-            <button (click)="this.sort()" [disabled]="isReady()" mat-icon-button>
-              <mat-icon>play_arrow</mat-icon>
-            </button>
-            <button (click)="this.stop()" [disabled]="!isReady()" mat-icon-button>
-              <mat-icon>stop</mat-icon>
-            </button>
-          </mat-list-item>
-          <div mat-subheader>Multiple runs</div>
-          <mat-divider inset></mat-divider>
-          <form [formGroup]="test">
-            <mat-list-item>
-              <p matLine> Number of runs </p>
-                <mat-slider formControlName="number" max="1000" min="10" step="1"  thumbLabel
-                            tickInterval="1"></mat-slider>
-            </mat-list-item>
-            <mat-list-item>
-              <p matLine>Run tests</p>
-              <mat-slide-toggle formControlName="shuffle" matTooltip="Shuffle input each run"></mat-slide-toggle>
-              <button  matTooltip="Run tests" (click)="this.massiveTests()" [disabled]="isReady()" mat-icon-button>
-                <mat-icon>playlist_play</mat-icon>
-              </button>
-              <p matLine class="text-muted">{{ 'Expected number of checks : ' + expectedNumberOfChecks }}</p>
-              <p matLine class="text-muted">{{ 'n(logn) : ' + nlogn }}</p>
-              <p matLine class="text-muted">{{ 'C : ' + expectedNumberOfChecks / nlogn }}</p>
-            </mat-list-item>
-          </form>
-        </mat-list>
-      </div>
-    </div>
-    <div class="col-lg-6">
-      <div class="row">
-        <div class="col-lg-6">
-          <div class="box">
-            <mat-list>
-              <div mat-subheader>Multiple runs</div>
-              <mat-divider inset></mat-divider>
-            </mat-list>
-            <app-bars
-              xLabel='Runs'
-              yLabel='Checks'
-              [dataSet]="dataSet">
-            </app-bars>
-          </div>
-        </div>
-        <div class="col-lg-6 text-center">
-          <div class="box">
-            <mat-list>
-              <div mat-subheader>Distribution of results</div>
-              <mat-divider inset></mat-divider>
-            </mat-list>
-            <mat-divider inset></mat-divider>
-            <app-bars xLabel='Number of Checks'
-                      yLabel='Occurrences'
-                      [dataSet]="fDataSet"
-            ></app-bars>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row justify-content-center">
-    <div class="col">
-      <div class="box">
+
+<mat-sidenav-container fullscreen>
+  <mat-sidenav #sidenav mode="side" align="start" opened >
+    <mat-toolbar style="width: 100%">
+      <!-- This fills the remaining space of the current row -->
+      <span class="fill"></span>
+      <button mat-icon-button (click)="sidenav.toggle()" ><mat-icon  aria-label="Example heart icon">close</mat-icon></button>
+    </mat-toolbar>
+    <mat-list>
+      <div mat-subheader class="section">Size of input</div>
+      <mat-divider inset></mat-divider>
+      <mat-list-item>
+        <p  matLine>Set input size </p>
+        <p matLine class="text-muted">N = {{size}}</p>
+        <button mat-icon-button (click)="this.emit()" [disabled]="isReady()" mat-button>
+          <mat-icon>shuffle</mat-icon>
+        </button>
+        <mat-slider [(ngModel)]="size" max="1000" min="10" step="1"  thumbLabel tickInterval="1" (change)="this.emit()"></mat-slider>
+      </mat-list-item>
+      <div mat-subheader class="section">Single run</div>
+      <mat-divider inset></mat-divider>
+      <mat-list-item>
+        <p matLine>Run</p>
+        <form [formGroup]="form">
+          <mat-slide-toggle formControlName="isAnimated" matTooltip="Show Animations"></mat-slide-toggle>
+        </form>
+        <button (click)="this.sort()" [disabled]="isReady()" mat-icon-button>
+          <mat-icon color="accent">play_arrow</mat-icon>
+        </button>
+        <button color="accent" (click)="this.stop()" [disabled]="!isReady()" mat-icon-button>
+          <mat-icon>stop</mat-icon>
+        </button>
+      </mat-list-item>
+      <div mat-subheader class="section">Multiple runs</div>
+      <mat-divider inset></mat-divider>
+      <form [formGroup]="test">
+        <mat-list-item>
+          <p matLine> Set number of runs </p>
+          <mat-slider color="warn" formControlName="number" max="1000" min="10" step="1"  thumbLabel
+                      tickInterval="1"></mat-slider>
+        </mat-list-item>
+        <mat-list-item>
+          <p matLine>Run {{numberOfRuns}} times</p>
+          <mat-slide-toggle color="warn" formControlName="shuffle" matTooltip="Shuffle input each run"></mat-slide-toggle>
+          <button color="warn" matTooltip="Run tests" (click)="this.massiveTests()" [disabled]="isReady()" mat-icon-button>
+            <mat-icon>play_arrow</mat-icon>
+          </button>
+
+          <p matLine class="text-muted">{{ 'Expected number of checks : ' + expectedNumberOfChecks }}</p>
+          <p matLine class="text-muted">{{ 'N : ' + size }}</p>
+          <!--              <p matLine class="text-muted">{{ 'N * ( log N) : ' + nlogn }}</p>-->
+          <p matLine class="text-muted">{{ 'C : ' + expectedNumberOfChecks / nlogn }}</p>
+        </mat-list-item>
+        <mat-list-item>
+          <p matLine>Growth of input</p>
+          <button  matTooltip="Run tests" (click)="this.incrementalTest()" [disabled]="isReady()" mat-icon-button>
+            <mat-icon color="warn">trending_up</mat-icon>
+          </button>
+          <p matLine class="text-muted">Size of input grows with the number of tests</p>
+
+        </mat-list-item>
+      </form>
+    </mat-list>
+  </mat-sidenav>
+  <mat-toolbar color="accent" style="width: 100%">
+    <button mat-icon-button (click)="sidenav.toggle()" ><mat-icon  aria-label="Example heart icon">menu</mat-icon></button>
+    <!-- This fills the remaining space of the current row -->
+    <span class="fill"></span>
+    <span>QuickSort Analyzer</span>
+  </mat-toolbar>
+  <div class="container">
+    <div class="row">
+      <div class="col-12 p-1" *ngIf="testMode==='Single run'">
         <app-sorting
           (isSorting)="this.onSorting($event)"
           [description]="this.rqs"
@@ -91,7 +80,34 @@
           [onStopCommand]="stopEmitter">
         </app-sorting>
       </div>
+      <div class="col-12 p-1" >
+        <ng-container *ngIf="testMode==='Multiple runs'">
+          <app-bars
+            [title]="testMode"
+            [height]="300"
+            xLabel='Runs'
+            yLabel='Checks'
+            [dataSet]="dataSet">
+          </app-bars>
+          <app-bars
+            title="Distribution"
+            [height]="300"
+            xLabel='Number of Checks'
+            yLabel='Occurrences'
+            [dataSet]="fDataSet">
+          </app-bars>
+        </ng-container>
+        <ng-container *ngIf="testMode==='grow'">
+          <app-bars
+            [title]="'Input grows each run'"
+            [height]="600"
+            xLabel='Size of Input'
+            yLabel='Checks'
+            [dataSet]="incrementalData">
+          </app-bars>
+        </ng-container>
+      </div>
     </div>
   </div>
+</mat-sidenav-container>
 
-</mat-card>

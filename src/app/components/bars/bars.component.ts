@@ -7,7 +7,8 @@ import {Component, Input } from '@angular/core';
 })
 export class BarsComponent  {
   colorScheme = { domain: ['#0f111a'] };
-
+  @Input() title = 'Graph';
+  @Input() height = 0;
   @Input() showX = true;
   @Input() showY = true;
   @Input() showXAxisLabel = true;
@@ -17,6 +18,10 @@ export class BarsComponent  {
   @Input() xLabel: any = 'X';
   @Input() yLabel: any = 'Y';
   @Input() animations = true;
+  @Input() checks = null;
+  @Input() swaps = null;
+
+
 
   constructor() {  }
 

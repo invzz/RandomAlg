@@ -2,14 +2,14 @@ import {Component, EventEmitter, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {SortingService} from '../../services/sorting.service';
 import {UtilsService} from '../../services/utils.service';
-import {Quicksort} from '../../algorithms/quicksort';
+import {QuickSort} from '../../algorithms/quickSort';
 import {DataBar} from '../../interfaces/data-bar';
 import {DataStateService} from '../../services/data-state.service';
 
 @Component({
   selector: 'app-sorting-stats',
   templateUrl: './sorting-stats.component.html',
-  styleUrls: ['./sorting-stats.component.css']
+  styleUrls: ['./sorting-stats.component.scss']
 })
 export class SortingStatsComponent implements OnInit {
 
@@ -25,12 +25,15 @@ export class SortingStatsComponent implements OnInit {
   dataSet: DataBar[] = [];
   fDataSet: DataBar[] = [];
 
+  testMode = '';
+
   size = 50;
   isSorting = false;
   expectedNumberOfChecks: number;
 
   numberOfRuns = 10;
   nlogn: number;
+  incrementalData: DataBar[] = [];
 
 
   constructor(public ds: DataStateService<number>, public ss: SortingService<number>,
@@ -38,6 +41,7 @@ export class SortingStatsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
 
     this.emit();
     this.form = this.fb.group({
@@ -72,6 +76,8 @@ export class SortingStatsComponent implements OnInit {
   }
 
   sort() {
+    this.testMode = 'Single run';
+    this.emit();
     this.sort$.emit();
   }
 
@@ -89,10 +95,10 @@ export class SortingStatsComponent implements OnInit {
 
 
   async massiveTests() {
+    this.testMode = 'Multiple runs';
     this.dataSet = [];
     this.fDataSet = [];
-    // await this.ds.shuffle().then((shuffled) => data = shuffled.slice());
-    const algoFactory = () => new Quicksort(0);
+    const algoFactory = () => new QuickSort(0);
     Promise.resolve().then(() => {
       if (this.test.get('shuffle').value) { this.ds.shuffle(); }
       this.ss.runManyTimes(this.numberOfRuns, this.ds.data, algoFactory)
@@ -104,6 +110,18 @@ export class SortingStatsComponent implements OnInit {
         });
     });
     this.ss.isSorting.emit(false);
+  }
+
+  async incrementalTest() {
+    this.testMode = 'grow';
+    this.incrementalData = [];
+    this.ss.algorithm = new QuickSort(0);
+    const data = [];
+    for (let i = 0; i < this.numberOfRuns; i++ ) {
+      data.push(i);
+      await this.dataHelper.shuffle(data);
+      this.incrementalData.push({name: i, value: await this.ss.algorithm.sort(data)});
+    }
   }
 
 
@@ -124,7 +142,6 @@ export class SortingStatsComponent implements OnInit {
       const reducer = (accumulator, currentValue) => accumulator + currentValue;
       this.nlogn = this.size * Math.log(this.size);
       this.expectedNumberOfChecks = Math.round( 1 / R * S.reduce(reducer));
-
     }
   }
 

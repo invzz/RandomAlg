@@ -1,9 +1,0 @@
-.row, .col, .box {
-  height: 100%;
-}
-
-.box {
-  height: 100%;
-  border: 1px solid #595959;
-  border-radius: 10px;
-}
