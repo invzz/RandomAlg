@@ -1,36 +1,35 @@
- <mat-card class="mb-1">
-   {{title}}
-  <div class="row" [style]="'height:' + height + 'px'">
-      <ngx-charts-bar-vertical
-        [results]="this.dataSet"
-        [xAxis]="showX"
-        [yAxis]="showY"
-        [showXAxisLabel]="showX"
-        [showYAxisLabel]="showY"
-        [xAxisLabel]="xLabel"
-        [yAxisLabel]="yLabel"
-        [showGridLines]="true"
-        [roundEdges]="false"
-        [barPadding]="0"
-        [customColors]="customColors"
-        [scheme]="colorScheme"
-        [animations]="animations"
-      >
-      </ngx-charts-bar-vertical>
+<h2>{{title}}</h2>
+  <div class="chart-container">
+    <ngx-charts-bar-vertical
+      [results]="this.dataSet"
+      [xAxis]="showX"
+      [yAxis]="showY"
+      [showXAxisLabel]="showX"
+      [showYAxisLabel]="showY"
+      [xAxisLabel]="xLabel"
+      [yAxisLabel]="yLabel"
+      [showGridLines]="true"
+      [roundEdges]="false"
+      [barPadding]="0"
+      [customColors]="customColors"
+      [scheme]="colorScheme"
+      [animations]="animations"
+    >
+    </ngx-charts-bar-vertical>
   </div>
-   <mat-card-footer>
-   <ng-container *ngIf="this.checks !== null">
-     <mat-divider></mat-divider>
-     <div class="row ">
-       <div class="col text-center">
-        <p> Checks <br> {{checks}}</p>
-       </div>
-       <div class="col text-center">
-         Swaps <br> {{swaps}}
-       </div>
-     </div>
-   </ng-container>
-   </mat-card-footer>
-</mat-card>
+  <div>
+    <ng-container *ngIf="this.checks !== null">
+      <mat-divider></mat-divider>
+      <div class="row ">
+        <div class="col text-center">
+          <p> Checks <br> {{checks}}</p>
+        </div>
+        <div class="col text-center">
+          Swaps <br> {{swaps}}
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
 
 

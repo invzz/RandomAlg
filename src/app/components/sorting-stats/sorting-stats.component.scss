@@ -1,14 +1,11 @@
 // Import library functions for theme creation.
 @import '~@angular/material/theming';
-
-  .row {
-    margin-bottom: 15px;
-  }
-
+.wrap {
+  background-color: black;
+}
   .box {
+    height: 400px;
 
-    border: 1px solid #595959;
-    border-radius: 10px;
   }
 
   .grow {
@@ -19,4 +16,9 @@
   /* This fills the remaining space, by using flexbox.
      Every toolbar row uses a flexbox row layout. */
   flex: 1 1 auto;
+}
+
+.chart-container {
+  width: 80%;
+  height: 100%;
 }

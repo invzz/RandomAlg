@@ -17,12 +17,13 @@ export class SortingStatsComponent implements OnInit {
   seed: EventEmitter<number[]> = new EventEmitter<number[]>();
   sort$: EventEmitter<any> = new EventEmitter<any>();
   stopEmitter: EventEmitter<any> = new EventEmitter<any>();
-  delay: EventEmitter<number> = new EventEmitter<number>();
+  delay = 1;
 
   form: FormGroup;
   test: FormGroup;
 
-  dataSet: DataBar[] = [];
+  singleDataSet: DataBar[] = [];
+  multiDataSet: DataBar[] = [];
   fDataSet: DataBar[] = [];
 
   testMode = '';
@@ -54,8 +55,7 @@ export class SortingStatsComponent implements OnInit {
     });
 
     this.form.get('isAnimated').valueChanges.subscribe((s) => {
-        const delay = s === true ? 0.002 : 0;
-        this.delay.emit(delay);
+        this.delay = s ? 1 : 0;
       }
     );
 
@@ -64,7 +64,8 @@ export class SortingStatsComponent implements OnInit {
       }
     );
 
-
+    this.ss.isSorting.subscribe((val) => this.isSorting = val);
+    this.ds.dataSeed.subscribe((data) => this.singleDataSet = data);
   }
 
   public async emit() {
@@ -75,14 +76,15 @@ export class SortingStatsComponent implements OnInit {
     return data;
   }
 
-  sort() {
+  async sort() {
     this.testMode = 'Single run';
-    this.emit();
-    this.sort$.emit();
+    this.ss.setAlgo(new QuickSort(this.delay));
+    this.ss.updates.subscribe((data) => this.singleDataSet = data);
+    await this.ss.sort(this.ds.data);
   }
 
   stop() {
-    this.stopEmitter.emit();
+    this.ss.stop();
   }
 
   isReady() {
@@ -96,14 +98,14 @@ export class SortingStatsComponent implements OnInit {
 
   async massiveTests() {
     this.testMode = 'Multiple runs';
-    this.dataSet = [];
+    this.multiDataSet = [];
     this.fDataSet = [];
     const algoFactory = () => new QuickSort(0);
     Promise.resolve().then(() => {
       if (this.test.get('shuffle').value) { this.ds.shuffle(); }
       this.ss.runManyTimes(this.numberOfRuns, this.ds.data, algoFactory)
       .then((results) => {
-        results.forEach((result, index) => this.dataSet.push({name: index, value: result}));
+        results.forEach((result, index) => this.multiDataSet.push({name: index, value: result}));
         this.ss.isSorting.next(false);
         this.fDataSet = this.frequency();
         this.Expectation();
@@ -126,7 +128,7 @@ export class SortingStatsComponent implements OnInit {
 
 
   frequency(): any {
-    const S: DataBar[] = this.dataSet.map(x => x.value).reduce((acc: DataBar[], item: number) => {
+    const S: DataBar[] = this.multiDataSet.map(x => x.value).reduce((acc: DataBar[], item: number) => {
       const n = item;
       const v = acc[item] ? acc[item].value + 1 : 1;
       acc[item] = {name: n, value: v};
@@ -136,8 +138,8 @@ export class SortingStatsComponent implements OnInit {
   }
 
   Expectation() {
-    if (this.dataSet.length > 0) {
-      const S = this.dataSet.map(x => x.value);
+    if (this.multiDataSet.length > 0) {
+      const S = this.multiDataSet.map(x => x.value);
       const R = this.numberOfRuns;
       const reducer = (accumulator, currentValue) => accumulator + currentValue;
       this.nlogn = this.size * Math.log(this.size);
@@ -145,6 +147,15 @@ export class SortingStatsComponent implements OnInit {
     }
   }
 
+  async shuffle() {
+    this.testMode = 'Single run';
+    await this.ds.shuffle();
+  }
+
+  async changeInputSize() {
+    this.testMode = 'Single run';
+    await this.emit();
+  }
 }
 
 export class AlgoType {

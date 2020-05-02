@@ -24,6 +24,7 @@ import { SidenavComponent } from './components/sidenav/sidenav.component';
 import {MatSelectModule} from '@angular/material/select';
 import {RouterModule} from '@angular/router';
 import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatMenuModule} from '@angular/material/menu';
 
 
 @NgModule({
@@ -56,6 +57,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
     MatSelectModule,
     RouterModule,
     MatToolbarModule,
+    MatMenuModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
