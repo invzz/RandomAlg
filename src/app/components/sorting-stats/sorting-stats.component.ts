@@ -21,6 +21,7 @@ export class SortingStatsComponent implements OnInit {
 
   singleDataSet: DataBar[] = [];
   multiDataSet: DataBar[] = [];
+  provDataSet: DataBar[] = [];
   fDataSet: DataBar[] = [];
 
   testMode = '';
@@ -62,12 +63,14 @@ export class SortingStatsComponent implements OnInit {
     );
     this.ss.yieldedResults.subscribe((v) => {
 
-      this.multiDataSet.push({name: v.name, value: v.value});
+      this.provDataSet.push({name: v.name, value: v.value});
       if (v.isDone) {
         this.isSorting = false;
-        this.multiDataSet = [...this.multiDataSet];
+        this.multiDataSet = this.provDataSet;
+        this.fDataSet = this.frequency();
+        this.Expectation();
       }
-      this.fDataSet = this.frequency();
+
     });
     this.ss.isSorting.subscribe((val) => this.isSorting = val);
     this.ds.dataSeed.subscribe((data) => this.singleDataSet = data);
@@ -105,7 +108,7 @@ export class SortingStatsComponent implements OnInit {
   async massiveTests() {
     this.isSorting = true;
     this.testMode = 'Multiple runs';
-    this.multiDataSet = [];
+    this.provDataSet = [];
     this.ss.runManyTimes(this.numberOfRuns, this.ds.data);
   }
 
