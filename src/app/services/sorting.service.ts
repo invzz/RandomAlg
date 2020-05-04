@@ -50,7 +50,7 @@ export class SortingService<T> {
           state = true;
         }
         this.yieldedResults.next({name: a, value: m.data.checksCount, isDone: state});
-
+        worker.terminate();
       };
       worker.postMessage(data);
     }
