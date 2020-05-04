@@ -49,6 +49,7 @@ export class SortingStatsComponent implements OnInit {
   // calculation of c
   private cArray: number[];
   c: number;
+  runningnum = 0;
 
 
 
@@ -80,7 +81,7 @@ export class SortingStatsComponent implements OnInit {
     );
 
     this.ss.yieldChecks.subscribe((v) => {
-
+      this.runningnum ++;
       this.checksPerRun.push(v.checks);
       this.swapsPerRun.push(v.swaps);
       if (v.isDone) {
@@ -127,6 +128,7 @@ export class SortingStatsComponent implements OnInit {
 
 
   async massiveTests() {
+    this.runningnum = 0;
     this.ExpectationPerRun = [];
     this.isSorting = true;
     this.testMode = 'Multiple runs';
