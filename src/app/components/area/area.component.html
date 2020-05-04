@@ -1,0 +1,19 @@
+<h2>{{title}}</h2>
+<div class="chart-container">
+  <ngx-charts-area-chart
+    [results]="this.dataSet"
+    [xAxis]="showX"
+    [yAxis]="showY"
+    [showXAxisLabel]="showX"
+    [showYAxisLabel]="showY"
+    [xAxisLabel]="xLabel"
+    [yAxisLabel]="yLabel"
+    [showGridLines]="true"
+    [animations]="animations"
+    [legend]="true"
+    [scheme]="'picnic'"
+  >
+  </ngx-charts-area-chart>
+</div>
+<div>
+</div>

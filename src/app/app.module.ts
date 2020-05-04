@@ -9,7 +9,7 @@ import {MatDividerModule} from '@angular/material/divider';
 import {MatSliderModule} from '@angular/material/slider';
 import {MatButtonModule} from '@angular/material/button';
 import {BarsComponent} from './components/bars/bars.component';
-import {BarChartModule} from '@swimlane/ngx-charts';
+import {AreaChartModule, BarChartModule, LineChartModule} from '@swimlane/ngx-charts';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
@@ -24,6 +24,8 @@ import {MatSelectModule} from '@angular/material/select';
 import {RouterModule} from '@angular/router';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatMenuModule} from '@angular/material/menu';
+import { LinesComponent } from './components/lines/lines.component';
+import { AreaComponent } from './components/area/area.component';
 
 
 @NgModule({
@@ -32,6 +34,8 @@ import {MatMenuModule} from '@angular/material/menu';
     BarsComponent,
     SortingStatsComponent,
     SidenavComponent,
+    LinesComponent,
+    AreaComponent,
   ],
   imports: [
     BrowserModule,
@@ -56,6 +60,8 @@ import {MatMenuModule} from '@angular/material/menu';
     RouterModule,
     MatToolbarModule,
     MatMenuModule,
+    AreaChartModule,
+    LineChartModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

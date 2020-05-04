@@ -6,6 +6,12 @@ import {QuickSort} from '../../algorithms/sorting/quickSort';
 import {DataBar} from '../../interfaces/data-bar';
 import {DataStateService} from '../../services/data-state.service';
 
+export interface MultiBar {
+ name: any;
+ series: DataBar[];
+}
+
+
 @Component({
   selector: 'app-sorting-stats',
   templateUrl: './sorting-stats.component.html',
@@ -19,10 +25,16 @@ export class SortingStatsComponent implements OnInit {
   form: FormGroup;
   test: FormGroup;
 
-  singleDataSet: DataBar[] = [];
-  multiDataSet: DataBar[] = [];
-  provDataSet: DataBar[] = [];
-  fDataSet: DataBar[] = [];
+  // checks
+  singleRunBars: DataBar[] = [];
+  checksPerRun: DataBar[] = [];
+
+  checksGraph: MultiBar[] = [];
+  distribution: MultiBar[] = [];
+  ExpectationPerRun: DataBar[] = [];
+
+  // swaps
+  swapsPerRun: DataBar[] = [];
 
   testMode = '';
 
@@ -31,8 +43,13 @@ export class SortingStatsComponent implements OnInit {
   expectedNumberOfChecks: number;
 
   numberOfRuns = 10;
-  nlogn: number;
+  nlogn: DataBar[] = [];
   incrementalData: DataBar[] = [];
+
+  // calculation of c
+  private cArray: number[];
+  c: number;
+
 
 
   constructor(public ds: DataStateService<number>, public ss: SortingService<number>,
@@ -61,19 +78,27 @@ export class SortingStatsComponent implements OnInit {
         this.numberOfRuns = s;
       }
     );
-    this.ss.yieldedResults.subscribe((v) => {
 
-      this.provDataSet.push({name: v.name, value: v.value});
+    this.ss.yieldChecks.subscribe((v) => {
+
+      this.checksPerRun.push(v.checks);
+      this.swapsPerRun.push(v.swaps);
       if (v.isDone) {
         this.isSorting = false;
-        this.multiDataSet = this.provDataSet;
-        this.fDataSet = this.frequency();
-        this.Expectation();
+        this.checksGraph = [
+          { name: 'Checks per run', series: this.checksPerRun },
+          { name: 'checks expectation', series: this.ExpectationPerRun },
+          { name: 'n log n', series: this.nlogn },
+          { name: 'Swaps per run', series: this.swapsPerRun },
+        ];
+        this.distribution = [{ name: 'distribution', series: this.frequency()}];
+        console.log( this.c );
       }
-
+      this.expectation(v.checks.name);
     });
+
     this.ss.isSorting.subscribe((val) => this.isSorting = val);
-    this.ds.dataSeed.subscribe((data) => this.singleDataSet = data);
+    this.ds.dataSeed.subscribe((data) => this.singleRunBars = data);
   }
 
   public async emit() {
@@ -87,34 +112,35 @@ export class SortingStatsComponent implements OnInit {
   async sort() {
     this.testMode = 'Single run';
     this.ss.setAlgo(new QuickSort(this.delay));
-    const s = this.ss.updates.subscribe((data) => this.singleDataSet = data);
+    const s = this.ss.updates.subscribe((data) => this.singleRunBars = data);
     this.ss.sort(this.ds.data);
     // s.unsubscribe();
   }
 
   stop() {
-    this.ss.stop();
   }
 
   isReady() {
     return this.isSorting;
   }
 
-  onSorting(newValue: boolean) {
-    this.isSorting = newValue;
-  }
 
 
   async massiveTests() {
+    this.ExpectationPerRun = [];
     this.isSorting = true;
     this.testMode = 'Multiple runs';
-    this.provDataSet = [];
+    this.checksPerRun = [];
+    this.swapsPerRun = [];
+    this.nlogn = [];
+    this.cArray = [];
     this.ss.runManyTimes(this.numberOfRuns, this.ds.data);
   }
 
   async incrementalTest() {
     this.testMode = 'grow';
     this.incrementalData = [];
+    this.ExpectationPerRun = [];
     this.ss.algorithm = new QuickSort(0);
     const data = [];
     for (let i = 0; i < this.numberOfRuns; i++ ) {
@@ -126,7 +152,7 @@ export class SortingStatsComponent implements OnInit {
 
 
   frequency(): any {
-    const S: DataBar[] = this.multiDataSet.map(x => x.value).reduce((acc: DataBar[], item: number) => {
+    const S: DataBar[] = this.checksPerRun.map(x => x.value).reduce((acc: DataBar[], item: number) => {
       const n = item;
       const v = acc[item] ? acc[item].value + 1 : 1;
       acc[item] = {name: n, value: v};
@@ -135,14 +161,19 @@ export class SortingStatsComponent implements OnInit {
     return S.filter(x => x.value > 0);
   }
 
-  Expectation() {
-    if (this.multiDataSet.length > 0) {
-      const S = this.multiDataSet.map(x => x.value);
-      const R = this.numberOfRuns;
-      const reducer = (accumulator, currentValue) => accumulator + currentValue;
-      this.nlogn = this.size * Math.log(this.size);
-      this.expectedNumberOfChecks = Math.round( 1 / R * S.reduce(reducer));
+  expectation(R) {
+    if (this.checksPerRun.length > 0) {
+      const S = this.checksPerRun.map(x => x.value);
+      const sum = (accumulator, currentValue) => accumulator + currentValue;
+      this.expectedNumberOfChecks = 1 / this.checksPerRun.length * S.reduce(sum);
+      const nlogn = {name: this.checksPerRun.length, value: this.size * Math.log(this.size)};
+      const expected = {name: this.checksPerRun.length , value: this.expectedNumberOfChecks };
+      this.nlogn.push (nlogn);
+      this.ExpectationPerRun.push(expected);
+      this.c = expected.value / nlogn.value;
+
     }
+    // this.ExpectationPerRun = [...this.ExpectationPerRun];
   }
 
   async shuffle() {
@@ -155,9 +186,3 @@ export class SortingStatsComponent implements OnInit {
     await this.emit();
   }
 }
-
-export class AlgoType {
-  constructor(public title: string) {
-  }
-}
-

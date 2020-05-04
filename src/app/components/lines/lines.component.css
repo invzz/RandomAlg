@@ -1,0 +1,14 @@
+::ng-deep.ngx-charts text {
+  font-style: italic;
+  font-size: 10px !important;
+  fill: #fff;
+}
+
+.chart-container {
+  width: 100%;
+  height: 500px;
+//border: 1px solid white;
+}
+.row {
+  height: 100%;
+}

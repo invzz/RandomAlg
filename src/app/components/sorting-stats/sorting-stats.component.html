@@ -1,116 +1,108 @@
+<div class="row">
+  <div class="col-md-3" >
+      <ng-container *ngIf="this.isSorting">
+        <mat-spinner style="margin:0 auto;" color="accent"></mat-spinner>
+        <h1 class="text-center">Sorting...</h1>
+      </ng-container>
+    <mat-list *ngIf="!this.isSorting">
+      <div mat-subheader class="section">Size of input</div>
+      <mat-divider inset></mat-divider>
+      <mat-list-item>
+        <p  matLine>Set input size </p>
+        <p matLine class="text-muted">N = {{size}}</p>
+        <button mat-icon-button (click)="this.shuffle()" [disabled]="this.isSorting" mat-button>
+          <mat-icon>shuffle</mat-icon>
+        </button>
+        <mat-slider [disabled]="this.isSorting"  [(ngModel)]="size" max="1000" min="10" step="1"  thumbLabel tickInterval="1" (change)="this.changeInputSize()"></mat-slider>
+      </mat-list-item>
+      <div mat-subheader class="section">Single run</div>
+      <mat-divider inset></mat-divider>
+      <mat-list-item>
+        <p matLine>Run</p>
+        <p matLine class="text-muted">swaps: {{this.ss.swaps}}</p>
+        <p matLine class="text-muted">checks: {{this.ss.checks}}</p>
+        <form [formGroup]="form">
+          <mat-slide-toggle [disabled]="isSorting" formControlName="isAnimated" matTooltip="Show Animations"></mat-slide-toggle>
+        </form>
+        <button (click)="this.sort()" [disabled]="isSorting" mat-icon-button>
+          <mat-icon color="accent">play_arrow</mat-icon>
+        </button>
+        <button color="accent" (click)="this.stop()" [disabled]="!isSorting" mat-icon-button>
+          <mat-icon>stop</mat-icon>
+        </button>
+      </mat-list-item>
+      <div mat-subheader class="section">Multiple runs</div>
+      <mat-divider inset></mat-divider>
+      <form [formGroup]="test">
+        <mat-list-item *ngIf="!this.isSorting">
+          <p matLine> Set number of runs </p>
+          <mat-slider color="warn" formControlName="number" max="1000" min="10" step="1"  thumbLabel
+                      tickInterval="1"></mat-slider>
+        </mat-list-item>
+        <mat-list-item *ngIf="!this.isSorting">
+          <p matLine>Run {{numberOfRuns}} times</p>
+          <mat-slide-toggle color="warn" formControlName="shuffle" matTooltip="Shuffle input each run"></mat-slide-toggle>
+          <button color="warn" matTooltip="Run tests" (click)="this.massiveTests()" [disabled]="isSorting" mat-icon-button>
+            <mat-icon>play_arrow</mat-icon>
+          </button>
+          <p matLine class="text-muted">{{ 'Expected number of checks : ' + expectedNumberOfChecks }}</p>
+          <p matLine class="text-muted">{{ 'N : ' + size }}</p>
+          <!--              <p matLine class="text-muted">{{ 'N * ( log N) : ' + nlogn }}</p>-->
+        </mat-list-item>
 
-<mat-toolbar color="accent" style="width: 100%">
-  <h1>Random-QuickSort Analyzer</h1>
-      <span class="fill"></span>
-      <button mat-icon-button ><mat-icon  aria-label="Example heart icon">close</mat-icon></button>
-    </mat-toolbar>
-<div class="container-fluid">
+        <mat-list-item *ngIf="!this.isSorting">
+          <p matLine>Growth of input</p>
+          <button  matTooltip="Run tests" (click)="this.incrementalTest()" [disabled]="isReady()" mat-icon-button>
+            <mat-icon color="warn">trending_up</mat-icon>
+          </button>
+          <p matLine class="text-muted">Size of input grows with the number of tests</p>
+        </mat-list-item>
+      </form>
+    </mat-list>
+  </div>
+  <div class="col-md-9" *ngIf="testMode==='Single run'">
+    <app-bars
+      [title]="testMode"
+      [animations]="false"
+      [customColors]="ss.customColors"
+      xLabel='Indexes'
+      yLabel='Values'
+      [dataSet]="singleRunBars">
+    </app-bars>
+  </div>
+
+  <div class="col-md-9" *ngIf="testMode==='Multiple runs'" >
     <div class="row">
-      <div class="col-md-4" *ngIf="this.isSorting">
-          <mat-spinner [diameter]="50" style="margin: 0 auto" color="accent"></mat-spinner>
-          <h1 class="text-center">Sorting...</h1>
+      <div class="col-md-6" >
+        <app-lines
+          [title]="'Multiple Runs Results'"
+          xLabel='Test number'
+          yLabel='count'
+          [C]="this.c"
+          [dataSet]="checksGraph">
+        </app-lines>
       </div>
-      <div class="col-md-4" *ngIf="!this.isSorting">
-        <mat-list>
-          <div mat-subheader class="section">Size of input</div>
-          <mat-divider inset></mat-divider>
-          <mat-list-item>
-            <p  matLine>Set input size </p>
-            <p matLine class="text-muted">N = {{size}}</p>
-            <button mat-icon-button (click)="this.shuffle()" [disabled]="this.isSorting" mat-button>
-              <mat-icon>shuffle</mat-icon>
-            </button>
-            <mat-slider [disabled]="this.isSorting"  [(ngModel)]="size" max="1000" min="10" step="1"  thumbLabel tickInterval="1" (change)="this.changeInputSize()"></mat-slider>
-          </mat-list-item>
-          <div mat-subheader class="section">Single run</div>
-          <mat-divider inset></mat-divider>
-          <mat-list-item>
-            <p matLine>Run</p>
-            <p matLine class="text-muted">swaps: {{this.ss.swaps}}</p>
-            <p matLine class="text-muted">checks: {{this.ss.checks}}</p>
-            <form [formGroup]="form">
-              <mat-slide-toggle [disabled]="isSorting" formControlName="isAnimated" matTooltip="Show Animations"></mat-slide-toggle>
-            </form>
-            <button (click)="this.sort()" [disabled]="isSorting" mat-icon-button>
-              <mat-icon color="accent">play_arrow</mat-icon>
-            </button>
-            <button color="accent" (click)="this.stop()" [disabled]="!isSorting" mat-icon-button>
-              <mat-icon>stop</mat-icon>
-            </button>
-          </mat-list-item>
-          <div mat-subheader class="section">Multiple runs</div>
-          <mat-divider inset></mat-divider>
-          <form [formGroup]="test">
-            <mat-list-item *ngIf="!this.isSorting">
-              <p matLine> Set number of runs </p>
-              <mat-slider color="warn" formControlName="number" max="1000" min="10" step="1"  thumbLabel
-                          tickInterval="1"></mat-slider>
-            </mat-list-item>
-            <mat-list-item *ngIf="!this.isSorting">
-              <p matLine>Run {{numberOfRuns}} times</p>
-              <mat-slide-toggle color="warn" formControlName="shuffle" matTooltip="Shuffle input each run"></mat-slide-toggle>
-              <button color="warn" matTooltip="Run tests" (click)="this.massiveTests()" [disabled]="isSorting" mat-icon-button>
-                <mat-icon>play_arrow</mat-icon>
-              </button>
-              <p matLine class="text-muted">{{ 'Expected number of checks : ' + expectedNumberOfChecks }}</p>
-              <p matLine class="text-muted">{{ 'N : ' + size }}</p>
-              <!--              <p matLine class="text-muted">{{ 'N * ( log N) : ' + nlogn }}</p>-->
-              <p matLine class="text-muted">{{ 'C : ' + expectedNumberOfChecks / nlogn }}</p>
-            </mat-list-item>
-
-            <mat-list-item *ngIf="!this.isSorting">
-              <p matLine>Growth of input</p>
-              <button  matTooltip="Run tests" (click)="this.incrementalTest()" [disabled]="isReady()" mat-icon-button>
-                <mat-icon color="warn">trending_up</mat-icon>
-              </button>
-              <p matLine class="text-muted">Size of input grows with the number of tests</p>
-            </mat-list-item>
-          </form>
-        </mat-list>
-      </div>
-      <div class="col-md-8" *ngIf="testMode==='Single run'">
-        <app-bars
-          [title]="testMode"
-          [animations]="false"
-          [customColors]="ss.customColors"
-          xLabel='Indexes'
-          yLabel='Values'
-          [dataSet]="singleDataSet">
-        </app-bars>
-      </div>
-      <div class="col-md-8" *ngIf="testMode==='Multiple runs'" >
-        <div class="row">
-          <div class="col-md-6">
-            <app-bars
-              [title]="testMode"
-              xLabel='Runs'
-              yLabel='Checks'
-              [animations]="true"
-              [dataSet]="multiDataSet">
-            </app-bars>
-          </div>
-          <div class="col-md-6">
-            <app-bars
-              title="Distribution"
-              xLabel='Number of Checks'
-              yLabel='Occurrences'
-              [animations]="true"
-              [dataSet]="fDataSet">
-            </app-bars>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-8" *ngIf="testMode==='grow'" >
-        <app-bars
-          [title]="'Input grows each run'"
-          xLabel='Size of Input'
-          yLabel='Checks'
-          [dataSet]="incrementalData">
-        </app-bars>
+      <div class="col-md-6">
+        <app-lines
+          title="Number of checks Distribution"
+          xLabel='Number of checks'
+          yLabel='Occurrences'
+          [animations]="true"
+          [dataSet]="distribution">
+        </app-lines>
       </div>
     </div>
-</div>
+  </div>
 
+  <div class="col-md-9" *ngIf="testMode==='grow'" >
+    <app-bars
+      [title]="'Input grows each run'"
+      xLabel='Size of Input'
+      yLabel='Checks'
+      [dataSet]="incrementalData">
+    </app-bars>
+  </div>
+</div>
 
 
 

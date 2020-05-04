@@ -18,7 +18,8 @@ export class SortingService<T> {
   updates = new Subject<DataBar[]>();
 
   isSorting: EventEmitter<boolean> = new EventEmitter<boolean>();
-  yieldedResults = new Subject<{name: number, value: number, isDone: boolean}>();
+  yieldChecks = new Subject<any>();
+
 
   constructor() {
 
@@ -38,7 +39,7 @@ export class SortingService<T> {
       worker.postMessage(toBeSorted);
   }
 
-  public runManyTimes(n, data: T[]) {
+  public runManyTimes(n: number, data: T[]) {
     let count = 0;
     let state = false;
     for (let a = 0; a < n; ++a) {
@@ -49,7 +50,11 @@ export class SortingService<T> {
         if (count === 0) {
           state = true;
         }
-        this.yieldedResults.next({name: a, value: m.data.checksCount, isDone: state});
+        this.yieldChecks.next(  {
+          checks: {name: a + 1, value: m.data.checksCount},
+          swaps: {name: a + 1, value:  m.data.swapCount},
+          isDone: state
+        });
         worker.terminate();
       };
       worker.postMessage(data);

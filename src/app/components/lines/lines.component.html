@@ -1,0 +1,25 @@
+<h2>{{title}}</h2>
+ <mat-card-subtitle *ngIf="C > 0">
+   Each run of the algorithm performed O(c n log(n)) checks, where C numerical value had an average value of {{C | number}}.
+ </mat-card-subtitle>
+    <!--    <mat-divider></mat-divider>-->
+    <!--    <p`> in average O(c n log(n)) swapsm where the constant  = {{C}} </p>-->
+  <div class="chart-container">
+    <ngx-charts-line-chart
+      [results]="this.dataSet"
+      [xAxis]="showX"
+      [yAxis]="showY"
+      [showXAxisLabel]="showX"
+      [showYAxisLabel]="showY"
+      [xAxisLabel]="xLabel"
+      [yAxisLabel]="yLabel"
+      [showGridLines]="true"
+      [animations]="animations"
+      [scheme]="'picnic'"
+      [legend]="true"
+
+    >
+    </ngx-charts-line-chart>
+  </div>
+
+

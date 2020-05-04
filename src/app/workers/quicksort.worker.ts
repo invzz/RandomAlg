@@ -48,7 +48,6 @@ const  randomizedQuickSort = (A: Array<number>, p: number, r: number) => {
 
 
 addEventListener('message', ({ data }) => {
-
   randomizedQuickSort(data, 0, data.length - 1);
   postMessage({dataSet: data, checksCount: checks, swapCount: swaps, isDone: state});
 });
