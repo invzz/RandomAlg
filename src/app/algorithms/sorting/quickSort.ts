@@ -1,7 +1,7 @@
-import {EventEmitter} from '@angular/core';
-import {BarColors} from '../types/barColors';
-import {Sortable} from './sortable.interface';
-import {Observable} from 'rxjs';
+import { EventEmitter } from '@angular/core';
+import { BarColors } from '../../types/barColors';
+import { Sortable } from './sortable.interface';
+import { Observable } from 'rxjs';
 
 
 export class QuickSort implements Sortable<number> {
@@ -35,9 +35,9 @@ export class QuickSort implements Sortable<number> {
 
   async sort(data: number[]) {
     this.checks = 0;
-    return new Promise<number>((resolve) => {
-      this.randomizedQuickSort(data, 0, data.length - 1).then(() => resolve(this.checks));
-    });
+    this.randomizedQuickSort(data, 0, data.length - 1);
+    return this.checks;
+
   }
 
   public stopToggle() {
@@ -54,7 +54,7 @@ export class QuickSort implements Sortable<number> {
     A[second] = aux;
   }
 
-  public async partition(A: Array<number>, p: number, r: number) {
+  public partition(A: Array<number>, p: number, r: number) {
     if (this.stop) {
       return;
     }
@@ -70,26 +70,23 @@ export class QuickSort implements Sortable<number> {
         this.painter.setYellow(i);
         this.colors.emit(this.painter);
         this.swap(A, i, j);
-        if (this.delay) {
-          await this.wait(this.delay);
-        }
       }
     }
     this.swap(A, i + 1, r);
     return i + 1;
   }
 
-  private async randomizedPartition(A: Array<number>, p: number, r: number) {
+  private randomizedPartition(A: Array<number>, p: number, r: number) {
     if (this.stop) {
       return;
     }
     const randomIndex = Math.floor(Math.random() * (r - p + 1)) + p;
-    await this.swap(A, r, randomIndex);
-    return await this.partition(A, p, r);
+    this.swap(A, r, randomIndex);
+    return this.partition(A, p, r);
   }
 
 
-  public async randomizedQuickSort(A: Array<number>, p: number, r: number) {
+  public randomizedQuickSort(A: Array<number>, p: number, r: number) {
     if (this.stop) {
       return null;
     }
@@ -97,29 +94,20 @@ export class QuickSort implements Sortable<number> {
     this.painter.setGreen(r);
     if (p <= r) {
       this.checkEvent.emit();
-      const q = await this.randomizedPartition(A, p, r);
+      const q = this.randomizedPartition(A, p, r);
       this.painter.setRed(q - 1);
       this.colors.emit(this.painter);
-      await this.randomizedQuickSort(A, p, q - 1);
+      this.randomizedQuickSort(A, p, q - 1);
       this.painter.setGreen(r);
       this.painter.setRed(q + 1);
       this.colors.emit(this.painter);
-      await this.randomizedQuickSort(A, q + 1, r);
+      this.randomizedQuickSort(A, q + 1, r);
     } else {
       return this.checks;
     }
   }
 
-  private async wait(ms: number = this.delay) {
-    if (this.stop) {
-      return;
-    }
-    if (ms !== null) {
-      return new Promise(resolve => {
-        setTimeout(resolve, ms);
-      });
-    }
-  }
+
 
 }
 

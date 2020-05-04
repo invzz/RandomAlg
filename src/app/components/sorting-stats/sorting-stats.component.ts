@@ -2,7 +2,7 @@ import {Component, EventEmitter, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {SortingService} from '../../services/sorting.service';
 import {UtilsService} from '../../services/utils.service';
-import {QuickSort} from '../../algorithms/quickSort';
+import {QuickSort} from '../../algorithms/sorting/quickSort';
 import {DataBar} from '../../interfaces/data-bar';
 import {DataStateService} from '../../services/data-state.service';
 
@@ -13,10 +13,7 @@ import {DataStateService} from '../../services/data-state.service';
 })
 export class SortingStatsComponent implements OnInit {
 
-  rqs = new AlgoType('Randomized QuickSort');
   seed: EventEmitter<number[]> = new EventEmitter<number[]>();
-  sort$: EventEmitter<any> = new EventEmitter<any>();
-  stopEmitter: EventEmitter<any> = new EventEmitter<any>();
   delay = 1;
 
   form: FormGroup;
@@ -63,7 +60,15 @@ export class SortingStatsComponent implements OnInit {
         this.numberOfRuns = s;
       }
     );
+    this.ss.yieldedResults.subscribe((v) => {
 
+      this.multiDataSet.push({name: v.name, value: v.value});
+      if (v.isDone) {
+        this.isSorting = false;
+        this.multiDataSet = [...this.multiDataSet];
+      }
+      this.fDataSet = this.frequency();
+    });
     this.ss.isSorting.subscribe((val) => this.isSorting = val);
     this.ds.dataSeed.subscribe((data) => this.singleDataSet = data);
   }
@@ -79,8 +84,9 @@ export class SortingStatsComponent implements OnInit {
   async sort() {
     this.testMode = 'Single run';
     this.ss.setAlgo(new QuickSort(this.delay));
-    this.ss.updates.subscribe((data) => this.singleDataSet = data);
-    await this.ss.sort(this.ds.data);
+    const s = this.ss.updates.subscribe((data) => this.singleDataSet = data);
+    this.ss.sort(this.ds.data);
+    // s.unsubscribe();
   }
 
   stop() {
@@ -97,21 +103,10 @@ export class SortingStatsComponent implements OnInit {
 
 
   async massiveTests() {
+    this.isSorting = true;
     this.testMode = 'Multiple runs';
     this.multiDataSet = [];
-    this.fDataSet = [];
-    const algoFactory = () => new QuickSort(0);
-    Promise.resolve().then(() => {
-      if (this.test.get('shuffle').value) { this.ds.shuffle(); }
-      this.ss.runManyTimes(this.numberOfRuns, this.ds.data, algoFactory)
-      .then((results) => {
-        results.forEach((result, index) => this.multiDataSet.push({name: index, value: result}));
-        this.ss.isSorting.next(false);
-        this.fDataSet = this.frequency();
-        this.Expectation();
-        });
-    });
-    this.ss.isSorting.emit(false);
+    this.ss.runManyTimes(this.numberOfRuns, this.ds.data);
   }
 
   async incrementalTest() {

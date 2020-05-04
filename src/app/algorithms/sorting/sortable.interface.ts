@@ -1,9 +1,9 @@
 import {Observable} from 'rxjs';
-import {BarColors} from '../types/barColors';
+import {BarColors} from '../../types/barColors';
 
 export interface Sortable<T> {
 
-  sort(data: T[]): Promise<number>;
+  sort(data: T[]);
 
   onSwap(): Observable<any>;
 

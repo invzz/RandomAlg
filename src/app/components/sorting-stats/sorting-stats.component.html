@@ -1,7 +1,6 @@
 
 <mat-toolbar color="accent" style="width: 100%">
   <h1>Random-QuickSort Analyzer</h1>
-      <!-- This fills the remaining space of the current row -->
       <span class="fill"></span>
       <button mat-icon-button ><mat-icon  aria-label="Example heart icon">close</mat-icon></button>
     </mat-toolbar>
@@ -74,13 +73,19 @@
           [dataSet]="singleDataSet">
         </app-bars>
       </div>
-      <div class="col" *ngIf="testMode==='Multiple runs'" >
+      <div class="col m-auto"  *ngIf="this.isSorting">
+        <mat-spinner style="margin: 0 auto" color="accent"></mat-spinner>
+        <h1 class="m-3 text-center">Heavy lifting...</h1>
+        <p class="text-center">omg! Cpu is on fire!</p>
+      </div>
+      <div class="col" *ngIf="testMode==='Multiple runs' && !this.isSorting" >
         <div class="row">
           <div class="col-md-6">
             <app-bars
               [title]="testMode"
               xLabel='Runs'
               yLabel='Checks'
+              [animations]="true"
               [dataSet]="multiDataSet">
             </app-bars>
           </div>
