@@ -19,56 +19,30 @@ export class SortingService<T> {
 
   isSorting: EventEmitter<boolean> = new EventEmitter<boolean>();
   yieldChecks = new Subject<any>();
+  private qsWorker: Worker;
 
 
   constructor() {
-
+    this.getNewQsWorker();
   }
 
-  public setAlgo(s: Sortable<T>) {
-    this.algorithm = s;
+  public getNewQsWorker() {
+    this.qsWorker = new Worker('../workers/quicksort.worker', {type: 'module'});
+    this.qsWorker.onmessage = ({ data }) => {
+      this.yieldChecks.next(data);
+      this.updates.next(data.dataSet.map((val, index) => ({ name: index, value: val })));
+      this.swaps = data.s.value;
+      this.checks = data.c.value;
+    };
   }
 
-  public sort(toBeSorted: T[]) {
-      const worker = new Worker('../workers/quicksort.worker', { type: 'module' });
-      worker.onmessage = ({ data }) => {
-        this.emit(data.dataSet);
-        this.swaps = data.swapCount;
-        this.checks = data.checksCount;
-      };
-      worker.postMessage(toBeSorted);
-  }
-
-  public runManyTimes(n: number, data: T[]) {
-    let count = 0;
-    let state = false;
-    for (let a = 0; a < n; ++a) {
-      ++count;
-      const worker = new Worker('../workers/quicksort.worker', { type: 'module' });
-      worker.onmessage = (m) => {
-        --count;
-        if (count === 0) {
-          state = true;
-        }
-        this.yieldChecks.next(  {
-          checks: {name: a + 1, value: m.data.checksCount},
-          swaps: {name: a + 1, value:  m.data.swapCount},
-          isDone: state
-        });
-        worker.terminate();
-      };
-      worker.postMessage(data);
-    }
-  }
-
-  public emit(data) {
-    this.updates.next(data.map((val, index) => {
-      return { name: index, value: val };
-    }));
+  public run(numberOfTimes: number, toBeSorted: T[]) {
+    this.qsWorker.postMessage({toBeSorted, n: numberOfTimes});
   }
 
   public stop() {
-    this.algorithm.onStop();
+    this.qsWorker.terminate();
+    this.getNewQsWorker();
   }
 
 }

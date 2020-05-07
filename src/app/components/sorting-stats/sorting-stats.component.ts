@@ -61,6 +61,9 @@ export class SortingStatsComponent implements OnInit {
 
 
     this.emit();
+
+    this.ss.updates.subscribe((data) => { if (this.testMode === 'singleRun') { this.singleRunBars = data; }});
+
     this.form = this.fb.group({
       isAnimated: [true, []]
     });
@@ -82,20 +85,20 @@ export class SortingStatsComponent implements OnInit {
 
     this.ss.yieldChecks.subscribe((v) => {
       this.runningNumber ++;
-      this.checksPerRun.push(v.checks);
-      this.swapsPerRun.push(v.swaps);
-      if (v.isDone) {
+      this.checksPerRun.push(v.c);
+      this.swapsPerRun.push(v.s);
+      if (this.runningNumber === this.numberOfRuns ) {
         this.isSorting = false;
         this.checksGraph = [
-          { name: 'Checks per run', series: this.checksPerRun },
-          { name: 'checks expectation', series: this.ExpectationPerRun },
-          { name: 'n log n', series: this.nlogn },
-          { name: 'Swaps per run', series: this.swapsPerRun },
-        ];
+            { name: 'Checks per run', series: this.checksPerRun },
+            { name: 'checks expectation', series: this.ExpectationPerRun },
+            { name: 'n log n', series: this.nlogn },
+            { name: 'Swaps per run', series: this.swapsPerRun },
+          ];
         this.distribution = [{ name: 'distribution', series: this.frequency()}];
-        console.log( this.c );
+        // console.log( this.c );
       }
-      this.expectation(v.checks.name);
+      this.expectation();
     });
 
     this.ss.isSorting.subscribe((val) => this.isSorting = val);
@@ -112,20 +115,12 @@ export class SortingStatsComponent implements OnInit {
 
   async sort() {
     this.testMode = 'Single run';
-    this.ss.setAlgo(new QuickSort(this.delay));
-    const s = this.ss.updates.subscribe((data) => this.singleRunBars = data);
-    this.ss.sort(this.ds.data);
-    // s.unsubscribe();
+    await this.ss.run(1, this.ds.data);
   }
 
   stop() {
+    this.ss.stop();
   }
-
-  isReady() {
-    return this.isSorting;
-  }
-
-
 
   async massiveTests() {
     this.runningNumber = 0;
@@ -136,9 +131,8 @@ export class SortingStatsComponent implements OnInit {
     this.swapsPerRun = [];
     this.nlogn = [];
     this.cArray = [];
-    this.ss.runManyTimes(this.numberOfRuns, this.ds.data);
+    this.ss.run(this.numberOfRuns, this.ds.data);
   }
-
   async incrementalTest() {
     this.testMode = 'grow';
     this.incrementalData = [];
@@ -151,8 +145,6 @@ export class SortingStatsComponent implements OnInit {
       this.incrementalData.push({name: i, value: await this.ss.algorithm.sort(data)});
     }
   }
-
-
   frequency(): any {
     const S: DataBar[] = this.checksPerRun.map(x => x.value).reduce((acc: DataBar[], item: number) => {
       const n = item;
@@ -162,8 +154,7 @@ export class SortingStatsComponent implements OnInit {
     }, []);
     return S.filter(x => x.value > 0);
   }
-
-  expectation(R) {
+  expectation() {
     if (this.checksPerRun.length > 0) {
       const S = this.checksPerRun.map(x => x.value);
       const sum = (accumulator, currentValue) => accumulator + currentValue;

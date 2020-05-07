@@ -43,7 +43,7 @@ export class ByzantineFaultToleranceComponent implements OnInit {
     this.newRound.subscribe((value) => {
       // counting rounds
       this.roundNumber++;
-      this.ready = true;
+
       this.votes = this.getBars();
       // getting reliable processes votes
       const votes = this.processes.filter(p => p.type === ProcessType.reliable);
@@ -59,6 +59,7 @@ export class ByzantineFaultToleranceComponent implements OnInit {
           this.onInit();
           this.MCByzantine();
         } else {
+          this.ready = true;
           this.nRuns = 0;
         }
       } else {
@@ -68,11 +69,11 @@ export class ByzantineFaultToleranceComponent implements OnInit {
     });
   }
 
-  randomBit()  {
+  randomBit(): number  {
     return Math.round(Math.random());
   }
 
-  getWorker() {
+  getWorker(): Worker {
     const options = this.form.getRawValue();
     const n = options.rProcesses + options.uProcesses;
 
@@ -133,7 +134,6 @@ export class ByzantineFaultToleranceComponent implements OnInit {
     const v0 = options.b > 1 ? null : options.b;
     if (n > 0) {
       this.roundNumber = 0;
-      // this.processes = this.getProcesses();
       const worker = this.getWorker();
       this.nextRound(worker,  v0);
     }
