@@ -26,6 +26,9 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatMenuModule} from '@angular/material/menu';
 import { LinesComponent } from './components/lines/lines.component';
 import { AreaComponent } from './components/area/area.component';
+import { ByzantineFaultToleranceComponent } from './components/byzantine-fault-tolerance/byzantine-fault-tolerance.component';
+import {MatGridListModule} from '@angular/material/grid-list';
+import {AppRoutingModule} from './modules/app-routing/app-routing.module';
 
 
 @NgModule({
@@ -36,33 +39,36 @@ import { AreaComponent } from './components/area/area.component';
     SidenavComponent,
     LinesComponent,
     AreaComponent,
+    ByzantineFaultToleranceComponent,
   ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    ReactiveFormsModule,
-    MatCardModule,
-    MatSliderModule,
-    MatIconModule,
-    MatButtonModule,
-    MatDividerModule,
-    BarChartModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatProgressSpinnerModule,
-    MatListModule,
-    FormsModule,
-    MatSlideToggleModule,
-    MatProgressBarModule,
-    MatTooltipModule,
-    MatSidenavModule,
-    MatSelectModule,
-    RouterModule,
-    MatToolbarModule,
-    MatMenuModule,
-    AreaChartModule,
-    LineChartModule,
-  ],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        ReactiveFormsModule,
+        MatCardModule,
+        MatSliderModule,
+        MatIconModule,
+        MatButtonModule,
+        MatDividerModule,
+        BarChartModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatProgressSpinnerModule,
+        MatListModule,
+        FormsModule,
+        MatSlideToggleModule,
+        MatProgressBarModule,
+        MatTooltipModule,
+        MatSidenavModule,
+        MatSelectModule,
+        RouterModule,
+        MatToolbarModule,
+        MatMenuModule,
+        AreaChartModule,
+        LineChartModule,
+        MatGridListModule,
+        AppRoutingModule,
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

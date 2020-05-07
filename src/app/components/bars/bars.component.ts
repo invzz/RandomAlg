@@ -20,6 +20,8 @@ export class BarsComponent  {
   @Input() animations = true;
   @Input() checks = null;
   @Input() swaps = null;
+  @Input() min = 0;
+  @Input() padding = 0;
 
 
 
