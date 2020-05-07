@@ -4,8 +4,11 @@
 .row {
   margin-bottom: 10px;
 }
+
+
 mat-list {
   flex-grow: 1;
-  border: 3px solid green;
+  border: 3px solid #6e899b;
   overflow: auto;
+  max-height: 450px;
 }
