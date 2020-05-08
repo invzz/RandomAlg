@@ -14,11 +14,10 @@
       [legend]="true"
     >
     </ngx-charts-line-chart>
-    <div class="mt-3" *ngIf="C > 0">
-      Each run of the algorithm performed O(c n log(n)) checks,
-      where C numerical value had an average value of
-      <b class="text-primary">{{C | number}}</b>
-    </div>
+
   </div>
-
-
+<div class="mt-3" *ngIf="C > 0">
+  Each run of the algorithm performed O(c n log(n)) checks,
+  where C numerical value had an average value of
+  <b class="text-primary">{{C | number}}</b>
+</div>
