@@ -6,9 +6,32 @@
 }
 
 
-mat-list {
+.list-container {
+  height: 360px;
+  width: 500px;
+  border: 1px solid black;
+}
+
+.cdk-virtual-scroll-content-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.state-item {
+  height: 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.lg {
+  height: 400px;
+}
+
+.run-list {
   flex-grow: 1;
-  border: 3px solid #6e899b;
   overflow: auto;
-  max-height: 450px;
+}
+b {
+  color: #7ac9ff;
 }

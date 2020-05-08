@@ -1,12 +1,8 @@
-<div class="row">
-  <div class="col">
-    <h3>Byzantine General fault tolerance consensus</h3>
-  </div>
-</div>
-
+<mat-card>
   <form [formGroup]="form">
+
     <div class="row justify-content-center">
-      <div class="col-md-4">
+      <div class="col-md-3">
         <mat-form-field  appearance="outline">
           <mat-label>choose initial setup</mat-label>
           <mat-select (selectionChange)="onInit()"  formControlName="b">
@@ -22,10 +18,10 @@
         <mat-form-field  appearance="outline">
           <mat-label>number of unreliable processes</mat-label>
           <input
-                 (change)="onInit()"
-                 matInput formControlName="uProcesses"
-                 type="number"
-                 placeholder="">
+            (change)="onInit()"
+            matInput formControlName="uProcesses"
+            type="number"
+            placeholder="">
         </mat-form-field>
         <mat-form-field  appearance="outline">
           <mat-label>number of runs</mat-label>
@@ -36,7 +32,7 @@
         </mat-form-field>
         <button class ="w-100 mb-1" [disabled]="!ready" mat-raised-button color="primary" (click)="MCByzantine()">Run</button>
         <button class ="w-100 mb-1" [disabled]="!ready" mat-raised-button  color="primary"(click)="onInit()">Initialize</button>
-        <button class ="w-100 mb-1" [disabled]="!ready" mat-raised-button color="warn"  (click)="onInitAndRun()">Init and run</button>
+<!--        <button class ="w-100 mb-1" [disabled]="!ready" mat-raised-button color="warn"  (click)="onInitAndRun()">Init and run</button>-->
         <div class="container">
           <div class="row">
             <div class="col text-center">
@@ -50,41 +46,59 @@
           </div>
         </div>
       </div>
-      <div class="col-md-4">
-        <app-bars
-          [dataSet]="this.votes"
-          [customColors]="this.customColors"
-          [min]="0"
-          [xLabel]="'processes'"
-          [yLabel]="'vote'"
-          [title]="'Processes statuses'"
-          [padding]="4"
-          [showY]="false"
-          [animations]="false"
-        >
-        </app-bars>
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-12">
+            <app-lines style="height: 100px"
+                       [dataSet]="this.resGraph"
+                       [xLabel]="'Run number'"
+                       [yLabel]="'Rounds'"
+                       [title]="'Number of rounds per run'"
+                       [animations]="false"
+                       [chartClass]="'small'"
+            >
+            </app-lines>
+          </div>
+          <div class="col-12">
+            <app-bars
+              [dataSet]="this.votes"
+              [customColors]="this.customColors"
+              [min]="0"
+              [xLabel]="'processes'"
+              [yLabel]="'vote'"
+              [title]="'Processes statuses'"
+              [padding]="4"
+              [showY]="false"
+              [animations]="false"
+              chartClass="small"
+            >
+            </app-bars>
+          </div>
+        </div>
       </div>
-      <div class="col-md-4">
-        <mat-list dense>
-          <h3 mat-subheader>Run {{nRuns}}</h3>
-          <mat-list-item *ngFor = "let r of this.results; let i = index ">
-            <h3 matLine>Run {{i}}</h3>
-            <p matLine>Consensus on {{r.verdict}}</p>
-            <p matLine class="text-muted">It took {{r.rounds}} rounds</p>
-            <mat-divider inset></mat-divider>
-          </mat-list-item>
-        </mat-list>
+      <div class="col-md-3" >
+        <h3>Run number {{nRuns}}</h3>
+        <div class="run-list lg">
+          <mat-card class="m-1" *ngFor="let r of this.results; let i = index">
+            <div class="row">
+              <div class="col-6 text-left">
+                <div><mat-icon>cached</mat-icon> agreed on <b>{{r.c}}</b></div>
+              </div>
+              <div class="col-6">
+                <div class="text-right">in <b>{{r.rounds}}</b> rounds</div>
+              </div>
+            </div>
+          </mat-card>
+          <div>
+            <button class ="w-100 mb-1" [disabled]="!ready" mat-raised-button color="primary" (click)="onReset()">clean</button>
+          </div>
+        </div>
       </div>
     </div>
+
   </form>
-<div class="row">
 
-</div>
-
-<div class="row">
-  <!--<p>Awaiting response from processes: {{respondedNumber}} / {{n}}</p>-->
-  <!--<p>Sending messages: {{respondedNumber}} / {{n}}</p>-->
-</div>
+</mat-card>
 
 
 

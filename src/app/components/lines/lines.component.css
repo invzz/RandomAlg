@@ -12,3 +12,19 @@
 .row {
   height: 100%;
 }
+.large {
+  width: 100%;
+  height: 500px;
+//border: 1px solid white;
+}
+.small {
+  width: 100%;
+  height: 175px;
+//border: 1px solid white;
+}
+
+.medium {
+  width: 100%;
+  height: 250px;
+//border: 1px solid white;
+}

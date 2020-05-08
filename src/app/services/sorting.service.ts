@@ -29,10 +29,18 @@ export class SortingService<T> {
   public getNewQsWorker() {
     this.qsWorker = new Worker('../workers/quicksort.worker', {type: 'module'});
     this.qsWorker.onmessage = ({ data }) => {
-      this.yieldChecks.next(data);
-      this.updates.next(data.dataSet.map((val, index) => ({ name: index, value: val })));
-      this.swaps = data.s.value;
-      this.checks = data.c.value;
+      if (data.type > 0) {
+        this.yieldChecks.next(data);
+        this.updates.next(data.dataSet.map((val, index) => ({
+          name: index, value: val
+        })));
+        this.swaps = data.s.value;
+        this.checks = data.c.value;
+      } else {
+        this.updates.next(data.dataSet.map((val, index) => ({
+          name: index, value: val
+        })));
+      }
     };
   }
 
@@ -42,6 +50,7 @@ export class SortingService<T> {
 
   public stop() {
     this.qsWorker.terminate();
+
     this.getNewQsWorker();
   }
 

@@ -1,7 +1,7 @@
 <div class="row">
-  <div class="col-md-3" >
+  <div class="col-md-3 h-100" >
       <ng-container *ngIf="this.isSorting">
-        <mat-spinner style="margin:0 auto;" color="accent"></mat-spinner>
+        <mat-progress-spinner [mode]="'determinate'" [value]="progress" style="margin:0 auto;" color="accent"></mat-progress-spinner>
         <h1 class="text-center">Running {{runningNumber}}/{{numberOfRuns}}</h1>
       </ng-container>
     <mat-list *ngIf="!this.isSorting">
@@ -15,7 +15,6 @@
         </button>
         <mat-slider  [(ngModel)]="size" max="1000" min="10" step="1"  thumbLabel tickInterval="1" (change)="this.changeInputSize()"></mat-slider>
       </mat-list-item>
-
       <div mat-subheader class="section">Single run</div>
       <mat-divider inset></mat-divider>
       <mat-list-item>

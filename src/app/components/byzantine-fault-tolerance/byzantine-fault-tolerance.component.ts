@@ -22,8 +22,10 @@ export class ByzantineFaultToleranceComponent implements OnInit {
   private newRound: EventEmitter<any> = new EventEmitter<any>();
   public consensus: number;
   customColors: { name: string; value: string }[];
-  results: any[] = [];
+  results: {c: number, rounds: number}[] = [];
   nRuns = 0;
+  resBar: DataBar[] = [];
+  resGraph: any = [];
 
 
   constructor(private fb: FormBuilder) {
@@ -36,6 +38,7 @@ export class ByzantineFaultToleranceComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
 
     this.onInit();
 
@@ -53,14 +56,18 @@ export class ByzantineFaultToleranceComponent implements OnInit {
         this.nRuns ++;
         console.log('hurray!');
         this.consensus = votes[0].vote;
-        this.results.push({rounds: this.roundNumber, verdict: this.consensus});
-        this.stop(value.worker);
+        this.results.push({c: this.consensus, rounds: this.roundNumber});
+        this.resBar.push({name: this.nRuns, value: this.roundNumber});
+        this.resGraph = [
+          {name: 'rounds', series: this.resBar},
+        ];
         if (this.nRuns < this.form.get('nRuns').value) {
           this.onInit();
           this.MCByzantine();
         } else {
           this.ready = true;
           this.nRuns = 0;
+
         }
       } else {
         console.log('no consensus');
@@ -104,7 +111,7 @@ export class ByzantineFaultToleranceComponent implements OnInit {
     }
   }
 
-  getProcesses(): Process[] {
+  preVote(): Process[] {
     const options = this.form.getRawValue();
     const r = options.rProcesses;
     const t = options.uProcesses;
@@ -127,7 +134,11 @@ export class ByzantineFaultToleranceComponent implements OnInit {
   }
 
   MCByzantine() {
-    // this.results = [];
+
+    if (!this.nRuns) {
+      this.resBar = [];
+    }
+
     this.ready = false;
     const options = this.form.getRawValue();
     const n = options.rProcesses + options.uProcesses;
@@ -156,19 +167,20 @@ export class ByzantineFaultToleranceComponent implements OnInit {
     this.processes.forEach(p => {
 
       // preparing the array to broadcast
-      let otherProcessesMessages: number[];
+
       if (isV0) {
-        // first round initialized with b0 for reliable processes
-        otherProcessesMessages = this.processes.map(x => x.send(v0));
-      } else {
-        // other rounds will get b from process state same way send() does
-        otherProcessesMessages = this.processes.map(x => x.getVote());
+        // first round initialized with v0 for reliable processes
+        this.processes = this.preVote();
+
       }
+      // other rounds will get b from process state same way send() does
+      const previousVote = this.processes.map(x => x.getVote());
+
 
       // preparing message to send to the process
       const message = {
         state: p.get(),
-        bits: otherProcessesMessages,
+        prev: previousVote,
         coin: sharedCoin,
         // edge is 2*t + 1
         edge: this.getEdge()
@@ -186,7 +198,7 @@ export class ByzantineFaultToleranceComponent implements OnInit {
   }
 
   onInit() {
-    this.processes = this.getProcesses();
+    this.processes = this.preVote();
     this.votes = this.getBars();
 
   }
@@ -217,6 +229,9 @@ export class ByzantineFaultToleranceComponent implements OnInit {
   onInitAndRun() {
     this.onInit();
     this.MCByzantine();
+  }
+  onReset() {
+    this.results = [];
   }
 }
 

@@ -46,19 +46,19 @@ addEventListener('message', ({ data }) => {
   } else {
 
     // reliable process
-    tally = mode(data.bits).tally;
-    maj = mode(data.bits).maj;
+    tally = mode(data.prev).tally;
+    maj = mode(data.prev).maj;
 
-    // shared coin
-    // if (tally >= data.edge) { bit = mode; } else { bit = data.coin; }
     const bit = tally >= data.edge ? maj : data.coin;
-    let msg: string;
-    if (tally >= data.edge) { msg = ('maj = ' + maj); } else {msg = ('coin = ' + bit ); }
+
+    const msg = tally >= data.edge ? ('maj = ' + maj) : ('coin = ' + bit );
+
     message = { bit, pid, maj, tally, coin: data.coin, msg,  };
 
   }
-  // console.log('received', data.bits );
-  // console.log( 'pid', message.pid, 'vote', message.bit, 'maj', maj, 'tally', tally, message.msg,' < > ', data.edge);
+
+  // console.log('received', data.prev );
+  // console.log( 'pid', message.pid, 'vote', message.bit, 'maj', maj, 'tally', tally, message.msg, ' < > ', data.edge);
   postMessage(message);
 }
 );

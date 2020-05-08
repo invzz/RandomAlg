@@ -22,7 +22,7 @@ export class BarsComponent  {
   @Input() swaps = null;
   @Input() min = 0;
   @Input() padding = 0;
-
+  @Input() chartClass: 'small' | 'medium' | 'large' = 'large';
 
 
   constructor() {  }

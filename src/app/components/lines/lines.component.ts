@@ -20,6 +20,8 @@ export class LinesComponent implements OnInit {
   @Input() xLabel: any = 'X';
   @Input() yLabel: any = 'Y';
   @Input() animations = true;
+  @Input() chartClass: 'small' | 'medium' | 'large' = 'large';
+
   ngOnInit(): void {
   }
 

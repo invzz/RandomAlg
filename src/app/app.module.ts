@@ -29,6 +29,7 @@ import { AreaComponent } from './components/area/area.component';
 import { ByzantineFaultToleranceComponent } from './components/byzantine-fault-tolerance/byzantine-fault-tolerance.component';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {AppRoutingModule} from './modules/app-routing/app-routing.module';
+import {ScrollingModule} from '@angular/cdk/scrolling';
 
 
 @NgModule({
@@ -68,6 +69,7 @@ import {AppRoutingModule} from './modules/app-routing/app-routing.module';
         LineChartModule,
         MatGridListModule,
         AppRoutingModule,
+        ScrollingModule,
     ],
   providers: [],
   bootstrap: [AppComponent]

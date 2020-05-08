@@ -21,6 +21,7 @@ export class AreaComponent implements OnInit {
   @Input() animations = true;
   @Input() checks = null;
   @Input() swaps = null;
+  @Input() chartClass: 'small' | 'medium' | 'large' = 'large';
 
   ngOnInit(): void {
   }

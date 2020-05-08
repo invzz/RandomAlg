@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {SortingService} from '../../services/sorting.service';
 import {UtilsService} from '../../services/utils.service';
@@ -17,7 +17,8 @@ export interface MultiBar {
   templateUrl: './sorting-stats.component.html',
   styleUrls: ['./sorting-stats.component.scss']
 })
-export class SortingStatsComponent implements OnInit {
+export class SortingStatsComponent implements OnInit, OnDestroy {
+
 
   seed: EventEmitter<number[]> = new EventEmitter<number[]>();
   delay = 1;
@@ -41,7 +42,7 @@ export class SortingStatsComponent implements OnInit {
   size = 50;
   isSorting = false;
   expectedNumberOfChecks: number;
-
+  progress: number;
   numberOfRuns = 10;
   nlogn: DataBar[] = [];
   incrementalData: DataBar[] = [];
@@ -62,7 +63,13 @@ export class SortingStatsComponent implements OnInit {
 
     this.emit();
 
-    this.ss.updates.subscribe((data) => { if (this.testMode === 'singleRun') { this.singleRunBars = data; }});
+    this.ss.updates.subscribe((data) => {
+      console.log(data, this.testMode);
+      if (this.testMode === 'Single run') {
+
+        this.singleRunBars = data;
+      }
+    });
 
     this.form = this.fb.group({
       isAnimated: [true, []]
@@ -85,6 +92,7 @@ export class SortingStatsComponent implements OnInit {
 
     this.ss.yieldChecks.subscribe((v) => {
       this.runningNumber ++;
+      this.progress = Math.floor((this.runningNumber / this.numberOfRuns ) * 100);
       this.checksPerRun.push(v.c);
       this.swapsPerRun.push(v.s);
       if (this.runningNumber === this.numberOfRuns ) {
@@ -123,6 +131,7 @@ export class SortingStatsComponent implements OnInit {
   }
 
   async massiveTests() {
+    this.progress = 0;
     this.runningNumber = 0;
     this.ExpectationPerRun = [];
     this.isSorting = true;
@@ -177,5 +186,7 @@ export class SortingStatsComponent implements OnInit {
   async changeInputSize() {
     this.testMode = 'Single run';
     await this.emit();
+  }
+  ngOnDestroy(): void {
   }
 }

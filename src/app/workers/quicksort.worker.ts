@@ -8,10 +8,11 @@ class QuickSort {
 
   swap(A: Array<number>, first: number, second: number)  {
     this.swaps++;
+
     const aux = A[first];
     A[first] = A[second];
     A[second] = aux;
-    // postMessage(A);
+    // postMessage({type: 0 , A});
 
   }
 
@@ -59,12 +60,12 @@ class QuickSort {
 }
 const qs = new QuickSort();
 
-
 addEventListener('message', ({ data }) => {
   console.log('received', data);
   for (let i = 1; i <= data.n; i++) {
     const res = qs.analyze(data.toBeSorted);
     postMessage({
+      type: 1,
       dataSet: data.toBeSorted,
       c: {
         name: i,
