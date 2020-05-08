@@ -3,18 +3,20 @@
     <mat-icon>more_vert</mat-icon>
   </button>
   <h3>Yet another Algorithm analyzer</h3>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item routerLink="/quicksort" routerLinkActive="active">
+      <mat-icon>sort</mat-icon>
+      <span >LVQuickSort</span>
+    </button>
+    <button mat-menu-item routerLink="/byzantineFaultTolerance" routerLinkActive="active">
+      <mat-icon>graphic_eq</mat-icon>
+      <span >MCByzantineGenerals</span>
+    </button>
+  </mat-menu>
+
 </mat-toolbar>
 
-<mat-menu #menu="matMenu">
-  <button mat-menu-item routerLink="/quicksort" routerLinkActive="active">
-    <mat-icon>sort</mat-icon>
-    <span >LVQuickSort</span>
-  </button>
-  <button mat-menu-item routerLink="/byzantineFaultTolerance" routerLinkActive="active">
-    <mat-icon>graphic_eq</mat-icon>
-    <span >MCByzantineGenerals</span>
-  </button>
-</mat-menu>
+
 
 <mat-card>
   <div class="row justify-content-center">
@@ -25,18 +27,16 @@
       </button>
     </div>
     <div class="col-md-4">
-      <button mat-menu-item routerLink="/byzantineFaultTolerance" routerLinkActive="active">
+      <button mat-menu-item routerLink="/byzantineFaultTolerance">
         <mat-icon>graphic_eq</mat-icon>
         <span >MCByzantineGenerals</span>
       </button>
     </div>
   </div>
 
-</mat-card>
-<mat-card  class = "m-3">
+<div  class = "m-3">
   <mat-card-content>
-
     <router-outlet></router-outlet>
   </mat-card-content>
+</div>
 </mat-card>
-
