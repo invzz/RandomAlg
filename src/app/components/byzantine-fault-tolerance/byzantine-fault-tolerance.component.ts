@@ -101,7 +101,6 @@ export class ByzantineFaultToleranceComponent implements OnInit {
 
         // if round is over
         if (this.respondedNumber === n) {
-
           // emit new round
           this.newRound.emit({worker});
         }

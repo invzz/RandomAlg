@@ -2,11 +2,10 @@ import {Component, EventEmitter, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {SortingService} from '../../services/sorting.service';
 import {UtilsService} from '../../services/utils.service';
-import {QuickSort} from '../../algorithms/sorting/quickSort';
 import {DataBar} from '../../interfaces/data-bar';
 import {DataStateService} from '../../services/data-state.service';
 
-export interface MultiBar {
+export interface Series {
  name: any;
  series: DataBar[];
 }
@@ -26,16 +25,18 @@ export class SortingStatsComponent implements OnInit, OnDestroy {
   form: FormGroup;
   test: FormGroup;
 
-  // checks
   singleRunBars: DataBar[] = [];
   checksPerRun: DataBar[] = [];
-
-  checksGraph: MultiBar[] = [];
-  distribution: MultiBar[] = [];
-  ExpectationPerRun: DataBar[] = [];
-
-  // swaps
+  checkExpected: DataBar[] = [];
   swapsPerRun: DataBar[] = [];
+  swapExpected: DataBar[] = [];
+
+  checksGraph: Series[] = [];
+  chkDist: Series[] = [];
+  swpDist: Series[] = [];
+  swpDistCl = {
+    domain: ['#29bb9c']
+  };
 
   testMode = '';
 
@@ -93,20 +94,46 @@ export class SortingStatsComponent implements OnInit, OnDestroy {
     this.ss.yieldChecks.subscribe((v) => {
       this.runningNumber ++;
       this.progress = Math.floor((this.runningNumber / this.numberOfRuns ) * 100);
+      v.c.name = this.runningNumber;
+      v.s.name = this.runningNumber;
       this.checksPerRun.push(v.c);
       this.swapsPerRun.push(v.s);
       if (this.runningNumber === this.numberOfRuns ) {
         this.isSorting = false;
-        this.checksGraph = [
-            { name: 'Checks per run', series: this.checksPerRun },
-            { name: 'checks expectation', series: this.ExpectationPerRun },
+        if (this.testMode === 'grow') {
+          this.checksGraph = [
             { name: 'n log n', series: this.nlogn },
+            { name: 'Checks per run', series: this.checksPerRun },
             { name: 'Swaps per run', series: this.swapsPerRun },
           ];
-        this.distribution = [{ name: 'distribution', series: this.frequency()}];
-        // console.log( this.c );
+
+        } else {
+          this.checksGraph = [
+            {name: 'Checks per run', series: this.checksPerRun},
+            {name: 'checks expected', series: this.checkExpected},
+            {name: 'n log n', series: this.nlogn},
+            {name: 'Swaps per run', series: this.swapsPerRun},
+            {name: 'Swaps expected', series: this.swapExpected},
+          ];
+          this.chkDist = [
+            {name: 'checks', series: this.getDistribution(this.checksPerRun)},
+          ];
+          this.swpDist = [
+            {name: 'swaps', series: this.getDistribution(this.swapsPerRun)}
+          ];
+        }
       }
-      this.expectation();
+      let stats;
+      if (this.testMode === 'grow') {
+        stats = this.stats(this.checksPerRun, (x) => x * Math.log(x), this.runningNumber);
+        this.nlogn.push(stats.fun );
+      } else {
+        stats = this.stats(this.checksPerRun, (x) => x * Math.log(x));
+        this.checkExpected.push(stats.expected);
+        this.c = stats.c;
+        stats = this.stats(this.swapsPerRun);
+        this.swapExpected.push(stats.expected);
+      }
     });
 
     this.ss.isSorting.subscribe((val) => this.isSorting = val);
@@ -131,31 +158,22 @@ export class SortingStatsComponent implements OnInit, OnDestroy {
   }
 
   async massiveTests() {
-    this.progress = 0;
-    this.runningNumber = 0;
-    this.ExpectationPerRun = [];
-    this.isSorting = true;
     this.testMode = 'Multiple runs';
-    this.checksPerRun = [];
-    this.swapsPerRun = [];
-    this.nlogn = [];
-    this.cArray = [];
+    this.resetData();
     this.ss.run(this.numberOfRuns, this.ds.data);
   }
   async incrementalTest() {
     this.testMode = 'grow';
-    this.incrementalData = [];
-    this.ExpectationPerRun = [];
-    this.ss.algorithm = new QuickSort(0);
-    const data = [];
+    this.resetData();
     for (let i = 0; i < this.numberOfRuns; i++ ) {
-      data.push(i);
-      await this.dataHelper.shuffle(data);
-      this.incrementalData.push({name: i, value: await this.ss.algorithm.sort(data)});
+      this.size = i;
+      await this.emit();
+      this.ss.run(1, this.ds.data);
     }
   }
-  frequency(): any {
-    const S: DataBar[] = this.checksPerRun.map(x => x.value).reduce((acc: DataBar[], item: number) => {
+
+  getDistribution(data): any {
+    const S: DataBar[] = data.map(x => x.value).reduce((acc: DataBar[], item: number) => {
       const n = item;
       const v = acc[item] ? acc[item].value + 1 : 1;
       acc[item] = {name: n, value: v};
@@ -163,19 +181,17 @@ export class SortingStatsComponent implements OnInit, OnDestroy {
     }, []);
     return S.filter(x => x.value > 0);
   }
-  expectation() {
-    if (this.checksPerRun.length > 0) {
-      const S = this.checksPerRun.map(x => x.value);
-      const sum = (accumulator, currentValue) => accumulator + currentValue;
-      this.expectedNumberOfChecks = 1 / this.checksPerRun.length * S.reduce(sum);
-      const nlogn = {name: this.checksPerRun.length, value: this.size * Math.log(this.size)};
-      const expected = {name: this.checksPerRun.length , value: this.expectedNumberOfChecks };
-      this.nlogn.push (nlogn);
-      this.ExpectationPerRun.push(expected);
-      this.c = expected.value / nlogn.value;
 
+  stats(data: DataBar[], comparingFunction?: (x) => number, n= this.size ) {
+    if (data.length > 0) {
+      const S = data.map(x => x.value);
+      const sum = (accumulator, currentValue) => accumulator + currentValue;
+      const expectation = 1 / data.length * S.reduce(sum);
+      const fun = comparingFunction ? {name: this.runningNumber, value: comparingFunction(n)} : null;
+      const expected = {name: data.length, value: expectation};
+      const c = comparingFunction ? expectation / fun.value : null;
+      return {fun, expected, c};
     }
-    // this.ExpectationPerRun = [...this.ExpectationPerRun];
   }
 
   async shuffle() {
@@ -186,6 +202,19 @@ export class SortingStatsComponent implements OnInit, OnDestroy {
   async changeInputSize() {
     this.testMode = 'Single run';
     await this.emit();
+  }
+
+  private resetData() {
+    this.progress = 0;
+    this.runningNumber = 0;
+    this.checkExpected = [];
+    this.swapExpected = [];
+    this.isSorting = true;
+    this.checksPerRun = [];
+    this.swapsPerRun = [];
+    this.nlogn = [];
+    this.cArray = [];
+    this.incrementalData = [];
   }
   ngOnDestroy(): void {
   }

@@ -1,42 +1,45 @@
-<mat-toolbar color="primary">
-  <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-    <mat-icon>more_vert</mat-icon>
-  </button>
-  <h3>Yet another Algorithm analyzer</h3>
-  <mat-menu #menu="matMenu">
-    <button mat-menu-item routerLink="/quicksort" routerLinkActive="active">
-      <mat-icon>sort</mat-icon>
-      <span >LVQuickSort</span>
+<div class="container-fluid">
+  <mat-toolbar color="primary">
+    <h3>Yet another Algorithm analyzer</h3>
+    <span class="spacer"></span>
+    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+      <mat-icon>more_vert</mat-icon>
     </button>
-    <button mat-menu-item routerLink="/byzantineFaultTolerance" routerLinkActive="active">
-      <mat-icon>graphic_eq</mat-icon>
-      <span >MCByzantineGenerals</span>
-    </button>
-  </mat-menu>
-
-</mat-toolbar>
-
-
-
-<mat-card>
-  <div class="row justify-content-center">
-    <div class="col-md-4">
+    <mat-menu #menu="matMenu">
       <button mat-menu-item routerLink="/quicksort" routerLinkActive="active">
         <mat-icon>sort</mat-icon>
         <span >LVQuickSort</span>
       </button>
-    </div>
-    <div class="col-md-4">
-      <button mat-menu-item routerLink="/byzantineFaultTolerance">
+      <button mat-menu-item routerLink="/byzantineFaultTolerance" routerLinkActive="active">
         <mat-icon>graphic_eq</mat-icon>
         <span >MCByzantineGenerals</span>
       </button>
-    </div>
-  </div>
+    </mat-menu>
+  </mat-toolbar>
 
-<div  class = "m-3">
-  <mat-card-content>
-    <router-outlet></router-outlet>
-  </mat-card-content>
+
+
+  <mat-card class="mat-elevation-z18 mt-3">
+    <div class="row justify-content-center">
+      <div class="col-md-4">
+        <button mat-menu-item routerLink="/quicksort" routerLinkActive="active">
+          <mat-icon>sort</mat-icon>
+          <span >LVQuickSort</span>
+        </button>
+      </div>
+      <div class="col-md-4">
+        <button mat-menu-item routerLink="/byzantineFaultTolerance" routerLinkActive="active">
+          <mat-icon>graphic_eq</mat-icon>
+          <span >MCByzantineGenerals</span>
+        </button>
+      </div>
+    </div>
+
+    <div  class = "m-3">
+      <mat-card-content>
+        <router-outlet></router-outlet>
+      </mat-card-content>
+    </div>
+  </mat-card>
+
 </div>
-</mat-card>

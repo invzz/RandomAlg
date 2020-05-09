@@ -71,7 +71,6 @@
     </mat-list>
   </div>
 
-
   <div class="col-md-9" *ngIf="testMode==='Single run'">
     <app-bars
       [title]="testMode"
@@ -99,20 +98,32 @@
           title="Number of checks Distribution"
           xLabel='Number of checks'
           yLabel='Occurrences'
+          chartClass="medium"
           [animations]="true"
-          [dataSet]="distribution">
+          [dataSet]="chkDist">
+        </app-lines>
+        <app-lines
+          title="Number of swaps Distribution"
+          xLabel='Number of swaps'
+          yLabel='Occurrences'
+          chartClass="medium"
+          [scheme]="swpDistCl"
+          [animations]="true"
+          [dataSet]="swpDist">
         </app-lines>
       </div>
     </div>
   </div>
 
   <div class="col-md-9" *ngIf="testMode==='grow'" >
-    <app-bars
-      [title]="'Input grows each run'"
-      xLabel='Size of Input'
-      yLabel='Checks'
-      [dataSet]="incrementalData">
-    </app-bars>
+    <app-area
+      title="Number of checks Distribution"
+      xLabel='Number of checks'
+      yLabel='Occurrences'
+      chartClass="large"
+      [animations]="true"
+      [dataSet]="checksGraph">
+    </app-area>
   </div>
 </div>
 

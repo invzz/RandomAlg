@@ -21,7 +21,7 @@ export class LinesComponent implements OnInit {
   @Input() yLabel: any = 'Y';
   @Input() animations = true;
   @Input() chartClass: 'small' | 'medium' | 'large' = 'large';
-
+  @Input() scheme: any = 'picnic';
   ngOnInit(): void {
   }
 

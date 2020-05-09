@@ -61,7 +61,6 @@ class QuickSort {
 const qs = new QuickSort();
 
 addEventListener('message', ({ data }) => {
-  console.log('received', data);
   for (let i = 1; i <= data.n; i++) {
     const res = qs.analyze(data.toBeSorted);
     postMessage({
