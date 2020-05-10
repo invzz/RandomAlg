@@ -37,16 +37,18 @@
       <div class="col-md-4">
         <div class="row">
           <div class="col-12">
-            <app-lines style="height: 100px"
-                       [dataSet]="this.resGraph"
-                       [xLabel]="'Run number'"
-                       [yLabel]="'Rounds'"
-                       [title]="'Number of rounds per run'"
-                       [animations]="false"
-                       chartClass="medium"
+
+            <app-bars
+              [dataSet]="this.resultsDist"
+              [xLabel]="'number of rounds'"
+              [yLabel]="'occurrencies'"
+              [title]="'number of rounds distribution'"
+              [animations]="false"
+              chartClass="medium"
             >
-            </app-lines>
+            </app-bars>
           </div>
+
           <div class="col-12">
             <app-bars
               [dataSet]="this.votes"
@@ -64,37 +66,63 @@
           </div>
         </div>
       </div>
-      <div class="col-md-3" >
-        <h3>Run number {{nRuns}}</h3>
-        <div class="run-list lg">
-          <mat-card class="m-1 mat-elevation-z5" *ngFor="let r of this.results; let i = index">
-            <div class="row">
-              <div class="col text-center ">
-                <p class="text-muted">run </p>
-                  <h4>{{i+1}}.</h4>
-              </div>
+      <div class="col-md-4">
+        <div class="row">
+          <div class="col-12">
+            <app-lines
+              [dataSet]="this.resGraph"
+              [xLabel]="'Run number'"
+              [yLabel]="'Rounds'"
+              [title]="'Number of rounds per run'"
+              [animations]="false"
+              chartClass="medium"
+            >
+            </app-lines>
+          </div>
 
-              <div class="col text-center">
-                <p class="text-muted">rounds </p>
-                <h4>{{r.rounds}}</h4>
-              </div>
-              <div class="col text-center">
-                <p class="text-muted">agreed on</p>
-                <h4>{{r.c}}</h4>
-              </div>
-            </div>
-          </mat-card>
-
-        </div>
-        <div>
-          <button class ="w-100 mb-1" [disabled]="!ready" mat-icon-button color="primary" (click)="onReset()">
-
-            <mat-icon class="mat-48">delete</mat-icon>
-            clean
-          </button>
+          <div class="col-12">
+            <app-lines
+              [dataSet]="this.distGraph"
+              [xLabel]="'run number'"
+              [yLabel]="'number of rounds'"
+              [title]="'number of rounds exoectation and variance'"
+              [animations]="false"
+              chartClass="medium"
+            >
+            </app-lines>
+          </div>
         </div>
       </div>
     </div>
+<!--    <div class="row">-->
+<!--    <div class="col-md-3" >-->
+<!--      <h3>Run number {{nRuns}}</h3>-->
+<!--      <div class="run-list lg">-->
+<!--        <mat-card class="m-1 mat-elevation-z5" *ngFor="let r of this.results; let i = index">-->
+<!--          <div class="row">-->
+<!--            <div class="col text-center ">-->
+<!--              <p class="text-muted">run </p>-->
+<!--              <h4>{{i+1}}.</h4>-->
+<!--            </div>-->
+<!--            <div class="col text-center">-->
+<!--              <p class="text-muted">rounds </p>-->
+<!--              <h4>{{r.rounds}}</h4>-->
+<!--            </div>-->
+<!--            <div class="col text-center">-->
+<!--              <p class="text-muted">agreed on</p>-->
+<!--              <h4>{{r.c}}</h4>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </mat-card>-->
+<!--      </div>-->
+<!--      <div>-->
+<!--        <button class ="w-100 mb-1" [disabled]="!ready" mat-icon-button color="primary" (click)="onReset()">-->
+<!--          <mat-icon class="mat-48">delete</mat-icon>-->
+<!--          clean-->
+<!--        </button>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    </div>-->
 
   </form>
 

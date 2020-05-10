@@ -2,13 +2,10 @@ import {Component, EventEmitter, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {SortingService} from '../../services/sorting.service';
 import {UtilsService} from '../../services/utils.service';
-import {DataBar} from '../../interfaces/data-bar';
+import {DataBar, Series} from '../../interfaces/data-bar';
 import {DataStateService} from '../../services/data-state.service';
 
-export interface Series {
- name: any;
- series: DataBar[];
-}
+
 
 
 @Component({

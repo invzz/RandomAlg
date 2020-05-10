@@ -1,8 +1,7 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { Sortable } from '../algorithms/sorting/sortable.interface';
 import { DataBar } from '../interfaces/data-bar';
-import { forkJoin, Subject, Subscription } from 'rxjs';
-import { animate } from '@angular/animations';
+import { Subject} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

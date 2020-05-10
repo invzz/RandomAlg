@@ -42,7 +42,7 @@ addEventListener('message', ({ data }) => {
   // unreliable process
   if (data.state.type === ProcessType.unreliable) {
     const coin = Math.round(Math.random());
-    message = { bit: coin, pid, msg: ('random') } ;
+    message = { bit: coin, pid, msg: {t: 'rnd', v: coin} } ;
   } else {
 
     // reliable process
@@ -51,14 +51,18 @@ addEventListener('message', ({ data }) => {
 
     const bit = tally >= data.edge ? maj : data.coin;
 
-    const msg = tally >= data.edge ? ('maj = ' + maj) : ('coin = ' + bit );
+    const msg = tally >= data.edge ? {t: 'maj', v: maj} : {t: 'coin', v: data.coin};
 
+    // if (tally >= data.edge) {
+    //   console.log('maj');
+    // } else {
+    //   console.log('coin');
+    // }
     message = { bit, pid, maj, tally, coin: data.coin, msg,  };
 
   }
 
-  // console.log('received', data.prev );
-  // console.log( 'pid', message.pid, 'vote', message.bit, 'maj', maj, 'tally', tally, message.msg, ' < > ', data.edge);
+
   postMessage(message);
 }
 );

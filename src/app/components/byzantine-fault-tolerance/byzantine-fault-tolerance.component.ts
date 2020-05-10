@@ -2,7 +2,7 @@ import {Component, EventEmitter, OnInit} from '@angular/core';
 import {Process} from './process';
 import {ProcessType} from './process-type.enum';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {DataBar} from '../../interfaces/data-bar';
+import {DataBar, Series} from '../../interfaces/data-bar';
 
 
 @Component({
@@ -26,6 +26,12 @@ export class ByzantineFaultToleranceComponent implements OnInit {
   nRuns = 0;
   resBar: DataBar[] = [];
   resGraph: any = [];
+  resultsDist: DataBar[] = [];
+  exp: DataBar[] = [];
+  var: DataBar[] = [];
+  distGraph: Series[];
+  private worker: Worker;
+  private counters =  {coin: 0, rnd: 0, maj: 0, tally: 0};
 
 
   constructor(private fb: FormBuilder) {
@@ -39,38 +45,50 @@ export class ByzantineFaultToleranceComponent implements OnInit {
 
   ngOnInit(): void {
 
-
+    this.worker = this.getWorker();
     this.onInit();
 
     // when a round is over
     this.newRound.subscribe((value) => {
+      console.log(this.counters);
+      this.counters = {coin: 0, rnd: 0, maj: 0, tally : 0};
       // counting rounds
       this.roundNumber++;
-
       this.votes = this.getBars();
       // getting reliable processes votes
       const votes = this.processes.filter(p => p.type === ProcessType.reliable);
       const isConsensus = votes.every((v) => v.vote === 0) || votes.every((v) => v.vote === 1);
       // if all reliable votes have the same value consensus is reached
       if (isConsensus) {
+        console.log('consensus reached');
         this.nRuns ++;
-        console.log('hurray!');
         this.consensus = votes[0].vote;
         this.results.push({c: this.consensus, rounds: this.roundNumber});
+        const res = this.results.map((x) => x.rounds).sort().reduce((prev, curr) => (prev[curr] = ++prev[curr] || 1 , prev), {});
+        const expectation = 1 / this.nRuns * this.results.map((x) => x.rounds).reduce((prev, curr) => prev + curr );
+        const variance = 1 / this.nRuns * this.results.map((x) => x.rounds).reduce((prev, curr) => prev + Math.pow(curr - expectation, 2));
+
+        this.var.push({name: this.nRuns , value: variance});
+        this.exp.push({name: this.nRuns , value: expectation});
+
         this.resBar.push({name: this.nRuns, value: this.roundNumber});
-        this.resGraph = [
-          {name: 'rounds', series: this.resBar},
-        ];
+        this.resGraph = [{name: 'rounds', series: this.resBar}, ];
+        this.distGraph = [{name: 'expectation', series: this.exp}, {name: 'variance', series: this.var},];
+
+        this.resultsDist = [];
+        for (const key of Object.keys(res).sort()) {
+          this.resultsDist.push({name: key, value: res[key]});
+        }
+        this.resultsDist = [...this.resultsDist];
+
         if (this.nRuns < this.form.get('nRuns').value) {
           this.onInit();
           this.MCByzantine();
         } else {
           this.ready = true;
           this.nRuns = 0;
-
         }
       } else {
-        console.log('no consensus');
         this.nextRound(value.worker);
       }
     });
@@ -81,21 +99,34 @@ export class ByzantineFaultToleranceComponent implements OnInit {
   }
 
   getWorker(): Worker {
-    const options = this.form.getRawValue();
-    const n = options.rProcesses + options.uProcesses;
+
+
 
     if (typeof Worker !== 'undefined') {
       const worker = new Worker('../../workers/mcgeneral-process.worker', {type: 'module'});
 
       // receiving messages from the processes
       worker.onmessage = (m) =>  {
-
+        const options = this.form.getRawValue();
+        const n = options.rProcesses + options.uProcesses;
         // counting responses
         this.respondedNumber++;
 
         const pid = m.data.pid;
         const vote = m.data.bit;
+        this.counters.tally = m.data.tally;
+        if (m.data.msg.t === 'coin') {
+          this.counters.coin++;
 
+        }
+        if (m.data.msg.t === 'rnd') {
+          this.counters.rnd++;
+
+        }
+        if (m.data.msg.t === 'maj') {
+          this.counters.maj++;
+        }
+        // console.log(m.data.msg, m.data.maj, m.data.tally);
         // memorizing the response
         this.processes[pid].set(vote);
 
@@ -135,7 +166,11 @@ export class ByzantineFaultToleranceComponent implements OnInit {
   MCByzantine() {
 
     if (!this.nRuns) {
+      this.var = [];
+      this.exp = [];
       this.resBar = [];
+      this.resultsDist = [];
+      this.results = [];
     }
 
     this.ready = false;
@@ -144,8 +179,8 @@ export class ByzantineFaultToleranceComponent implements OnInit {
     const v0 = options.b > 1 ? null : options.b;
     if (n > 0) {
       this.roundNumber = 0;
-      const worker = this.getWorker();
-      this.nextRound(worker,  v0);
+
+      this.nextRound(this.worker,  v0);
     }
    }
 
@@ -231,6 +266,7 @@ export class ByzantineFaultToleranceComponent implements OnInit {
   }
   onReset() {
     this.results = [];
+
   }
 }
 
