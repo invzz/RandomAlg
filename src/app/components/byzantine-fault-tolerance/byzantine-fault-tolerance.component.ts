@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit} from '@angular/core';
 import {Process} from './process';
 import {ProcessType} from './process-type.enum';
 import {FormBuilder, FormGroup} from '@angular/forms';
@@ -10,7 +10,7 @@ import {DataBar, Series} from '../../interfaces/data-bar';
   templateUrl: './byzantine-fault-tolerance.component.html',
   styleUrls: ['./byzantine-fault-tolerance.component.css']
 })
-export class ByzantineFaultToleranceComponent implements OnInit {
+export class ByzantineFaultToleranceComponent implements OnInit, OnDestroy {
 
   ready = true;
   respondedNumber = 0;
@@ -99,9 +99,6 @@ export class ByzantineFaultToleranceComponent implements OnInit {
   }
 
   getWorker(): Worker {
-
-
-
     if (typeof Worker !== 'undefined') {
       const worker = new Worker('../../workers/mcgeneral-process.worker', {type: 'module'});
 
@@ -267,6 +264,9 @@ export class ByzantineFaultToleranceComponent implements OnInit {
   onReset() {
     this.results = [];
 
+  }
+  ngOnDestroy(): void {
+    this.worker.terminate();
   }
 }
 

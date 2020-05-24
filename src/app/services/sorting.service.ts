@@ -1,5 +1,4 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { Sortable } from '../algorithms/sorting/sortable.interface';
 import { DataBar } from '../interfaces/data-bar';
 import { Subject} from 'rxjs';
 
@@ -8,7 +7,6 @@ import { Subject} from 'rxjs';
 })
 export class SortingService<T> {
 
-  algorithm: Sortable<T>;
   customColors: any;
 
   swaps = 0;
@@ -49,8 +47,10 @@ export class SortingService<T> {
 
   public stop() {
     this.qsWorker.terminate();
-
     this.getNewQsWorker();
   }
 
+  public destroy() {
+    this.qsWorker.terminate();
+  }
 }

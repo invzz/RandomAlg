@@ -214,5 +214,6 @@ export class SortingStatsComponent implements OnInit, OnDestroy {
     this.incrementalData = [];
   }
   ngOnDestroy(): void {
+
   }
 }

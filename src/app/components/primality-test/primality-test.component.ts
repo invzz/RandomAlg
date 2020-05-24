@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 
 @Component({
@@ -6,7 +6,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
   templateUrl: './primality-test.component.html',
   styleUrls: ['./primality-test.component.css']
 })
-export class PrimalityTestComponent implements OnInit {
+export class PrimalityTestComponent implements OnInit, OnDestroy {
   form: FormGroup;
   worker: Worker;
   result: any = {};
@@ -64,5 +64,8 @@ export class PrimalityTestComponent implements OnInit {
       messages++
       this.worker.postMessage({ n: messages, nTests: this.form.get('s').value});
     }
+  }
+  ngOnDestroy(): void {
+    this.worker.terminate();
   }
 }
