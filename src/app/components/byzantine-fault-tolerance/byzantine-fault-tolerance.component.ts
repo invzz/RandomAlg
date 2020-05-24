@@ -73,7 +73,7 @@ export class ByzantineFaultToleranceComponent implements OnInit {
 
         this.resBar.push({name: this.nRuns, value: this.roundNumber});
         this.resGraph = [{name: 'rounds', series: this.resBar}, ];
-        this.distGraph = [{name: 'expectation', series: this.exp}, {name: 'variance', series: this.var},];
+        this.distGraph = [{name: 'expectation', series: this.exp}, {name: 'variance', series: this.var}];
 
         this.resultsDist = [];
         for (const key of Object.keys(res).sort()) {

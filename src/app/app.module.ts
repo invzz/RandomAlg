@@ -30,6 +30,7 @@ import { ByzantineFaultToleranceComponent } from './components/byzantine-fault-t
 import {MatGridListModule} from '@angular/material/grid-list';
 import {AppRoutingModule} from './modules/app-routing/app-routing.module';
 import {ScrollingModule} from '@angular/cdk/scrolling';
+import { PrimalityTestComponent } from './components/primality-test/primality-test.component';
 
 
 @NgModule({
@@ -41,6 +42,7 @@ import {ScrollingModule} from '@angular/cdk/scrolling';
     LinesComponent,
     AreaComponent,
     ByzantineFaultToleranceComponent,
+    PrimalityTestComponent,
   ],
     imports: [
         BrowserModule,

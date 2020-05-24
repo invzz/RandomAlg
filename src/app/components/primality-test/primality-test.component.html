@@ -1,0 +1,74 @@
+<form [formGroup]="form">
+  <div class="row ">
+    <div class="col-md-3">
+      <div class="row mb-3">
+
+        <div class="col-12">
+          <mat-form-field  appearance="outline">
+            <mat-label>number of witnesses tests</mat-label>
+            <input matInput formControlName="s" type="number" placeholder="">
+          </mat-form-field>
+        </div>
+        <div class="col-12">
+          <mat-card-subtitle>Test if prime</mat-card-subtitle>
+        </div>
+        <div class="col-12">
+          <mat-form-field  appearance="outline">
+            <mat-label>number to test</mat-label>
+            <input matInput formControlName="n" type="number" placeholder="">
+          </mat-form-field>
+        </div>
+
+        <div class="col-12 ">
+          <button mat-raised-button class="w-100" [color]="'accent'" (click)="onTest()" > Test </button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <mat-card-subtitle>List (pseudo)primes from - to</mat-card-subtitle>
+        </div>
+        <div class="col-12">
+          <mat-form-field  appearance="outline">
+            <mat-label>from </mat-label>
+            <input matInput formControlName="ls" type="number" placeholder="">
+          </mat-form-field>
+        </div>
+        <div class="col-12">
+          <mat-form-field  appearance="outline">
+            <mat-label>to</mat-label>
+            <input matInput formControlName="l" type="number" placeholder="">
+          </mat-form-field>
+        </div>
+        <div class="col-12 ">
+          <button mat-raised-button class="w-100" [color]="'accent'" (click)="onIncrementalTest()" >list pseudo primes</button>
+        </div>
+      </div>
+    </div>
+    <div class="col" *ngIf="ready && testMode==='single'">
+      <p mat-subheader>Response: {{this.result.response}} </p>
+      <mat-list dense>
+        <mat-list-item *ngFor="let t of this.result.tried">{{t.w}} {{t.a}}, after {{t.i}} iterations of MCMillerRabin</mat-list-item>
+      </mat-list>
+    </div>
+    <div class="col" *ngIf="ready && testMode==='incremental'">
+      <div class="row">
+        <div class="col-12">
+
+          <app-bars
+            [dataSet]="this.iResults"
+            [xLabel]="'numbers'"
+            [yLabel]="'is prime'"
+            [title]="'Primes distribution'"
+            [animations]="false"
+            chartClass="large"
+          >
+          </app-bars>
+        </div>
+      </div>
+    </div>
+    <div class="col" *ngIf="!ready">
+      <mat-spinner ></mat-spinner>
+    </div>
+  </div>
+</form>

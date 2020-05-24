@@ -52,12 +52,6 @@ addEventListener('message', ({ data }) => {
     const bit = tally >= data.edge ? maj : data.coin;
 
     const msg = tally >= data.edge ? {t: 'maj', v: maj} : {t: 'coin', v: data.coin};
-
-    // if (tally >= data.edge) {
-    //   console.log('maj');
-    // } else {
-    //   console.log('coin');
-    // }
     message = { bit, pid, maj, tally, coin: data.coin, msg,  };
 
   }

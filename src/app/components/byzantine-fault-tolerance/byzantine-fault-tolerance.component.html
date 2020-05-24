@@ -1,7 +1,7 @@
 
   <form [formGroup]="form">
 
-    <div class="row justify-content-center">
+    <div class="row">
       <div class="col-md-3">
         <mat-form-field  appearance="outline">
           <mat-label>choose initial setup</mat-label>
@@ -34,7 +34,7 @@
         <button class ="w-100 mb-1" [disabled]="!ready" mat-raised-button  color="primary"(click)="onInit()">Initialize</button>
 <!--        <button class ="w-100 mb-1" [disabled]="!ready" mat-raised-button color="warn"  (click)="onInitAndRun()">Init and run</button>-->
       </div>
-      <div class="col-md-4">
+      <div class="col-md-5">
         <div class="row">
           <div class="col-12">
 
